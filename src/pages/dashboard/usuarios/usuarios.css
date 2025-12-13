@@ -1,22 +1,23 @@
 .container-card {
-    min-width: 700px;
-    max-width: 1200px;
-    width: 100px;
+    width: 100%;
 }
 
-.navCard {
-    padding: 15px;
-}
 
 .container-usuarios {
-    width: 100%;
+    width: 1200px;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     gap: 10px;
-    margin: 15px 25px;
+    margin: 15px 5px;
     background-color: var(--base);
     box-shadow: 0 0 4px 0px var(--foreGround);
     border-radius: 8px;
     padding: 15px;
+}
+
+.navCard-user {
+    display: flex;
+    margin: 15px 5px;
+    gap: 10px;
 }

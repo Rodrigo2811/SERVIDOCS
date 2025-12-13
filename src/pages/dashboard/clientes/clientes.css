@@ -1,10 +1,10 @@
 .container-clientes {
-    width: 100%;
+    width: 1200px;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     gap: 10px;
-    margin: 15px 25px;
+    margin: 15px 5px;
     background-color: var(--base);
     box-shadow: 0 0 4px 0px var(--foreGround);
     border-radius: 8px;
@@ -24,18 +24,40 @@
     text-align: center;
 }
 
-header {
+.btn-novoCliente:hover {
+    background-color: var(--button-effect);
+}
+
+.header-clientes {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    margin: 15px 25px;
+    width: auto;
+    margin: 15px 5px;
 }
 
-.container-clientes input {
-    width: 95%;
-    padding: 8px 12px;
 
+
+.container-clientes input {
+    width: 100%;
+    padding: 8px 12px;
     border: 1px solid var(--foreGround);
     border-radius: 4px;
+}
+
+table,
+th,
+td {
+    height: 15px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.btn-acao {
+    width: 30px;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
 }

@@ -3,6 +3,8 @@ import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout
 import Card from "../../../components/card/card";
 
 
+import { BsPerson } from 'react-icons/bs'
+
 import './usuarios.css'
 
 const Usuarios = () => {
@@ -20,11 +22,11 @@ const Usuarios = () => {
 
                 </header>
 
-                <div className="navCard">
+                <div className="navCard-user">
 
                     <Card
                         title='Total de Usuários'
-                        icon={''}
+                        icon={<BsPerson />}
                         qtd={0}
                         description='Usuários cadastrados'
                     />
@@ -33,7 +35,7 @@ const Usuarios = () => {
 
                         title='Administradores'
                         icon={''}
-                        qtd={0}
+                        qtd={1}
                         description='Com permissões administrativas'
                     />
                 </div>
@@ -47,17 +49,20 @@ const Usuarios = () => {
                             <tr>
                                 <th>Nome</th>
                                 <th>Email</th>
+                                <th>Tipo</th>
                                 <th>Cadastro</th>
                             </tr>
-                            <tbody>
-                                <tr>
-                                    <td>Rodrigo</td>
-                                    <td>teste@teste.com</td>
-                                    <td>71 3356-1875</td>
 
-                                </tr>
-                            </tbody>
                         </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>Rodrigo</td>
+                                <td>teste@teste.com</td>
+                                <td>Administrador</td>
+                                <td>11/12/2025</td>
+                            </tr>
+                        </tbody>
                     </table>
 
                 </div>
