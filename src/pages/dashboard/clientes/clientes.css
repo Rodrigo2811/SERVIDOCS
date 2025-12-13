@@ -1,0 +1,41 @@
+.container-clientes {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 25px;
+    background-color: var(--base);
+    box-shadow: 0 0 4px 0px var(--foreGround);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.btn-novoCliente {
+    padding: 4px;
+    background-color: var(--button-primary);
+    color: var(--secundary);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+    width: 150px;
+    height: 40px;
+    text-align: center;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 15px 25px;
+}
+
+.container-clientes input {
+    width: 95%;
+    padding: 8px 12px;
+
+    border: 1px solid var(--foreGround);
+    border-radius: 4px;
+}

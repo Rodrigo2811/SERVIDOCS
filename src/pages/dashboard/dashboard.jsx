@@ -8,15 +8,19 @@ const Dashboard = () => {
         <>
             <DashboardLayout>
 
-                <h1>Dashboard</h1>
-                <p>Visão geral do sistema</p>
+                <header>
+                    <h1>Dashboard</h1>
+                    <p>Visão geral do sistema</p>
+
+
+                </header>
 
                 <div className="navCard">
                     <Card
 
                         title='Total de Clientes'
                         icon={<BsPerson />}
-                        qtd={2}
+                        qtd={0}
                         description='Clientes cadastrados'
                     />
 
@@ -24,7 +28,7 @@ const Dashboard = () => {
 
                         title='Total de Produtos'
                         icon={<BsBoxSeam />}
-                        qtd={2}
+                        qtd={0}
                         description='Produtos cadastrados'
                     />
 
@@ -32,7 +36,7 @@ const Dashboard = () => {
 
                         title='Total de Vendas'
                         icon={<BsCart3 />}
-                        qtd={2}
+                        qtd={0}
                         description='Vendas realizadas  '
                     />
 
@@ -40,7 +44,7 @@ const Dashboard = () => {
 
                         title='Receita Total'
                         icon={<BsCurrencyDollar />}
-                        qtd={Number(0.00)}
+                        qtd={Number(0).toFixed(2)}
                         description='Valor total em vendas'
                     />
 

@@ -1,6 +1,8 @@
-import logo from '/public/indice.jpg'
+import { Link } from 'react-router-dom';
 
-import './registro.css'
+import logo from '/public/indice.jpg';
+
+import './registro.css';
 
 
 const Registrar = () => {
@@ -31,7 +33,7 @@ const Registrar = () => {
                     <button>Registrar</button>
                 </form>
 
-                <span>ja tem Conta? <a href="/">Fazer login</a></span>
+                <span>ja tem Conta? <Link to="/">Fazer login</Link></span>
 
             </div>
         </>

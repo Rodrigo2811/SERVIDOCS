@@ -1,4 +1,5 @@
-import logo from '/public/indice.jpg'
+import { Link } from 'react-router-dom';
+import logo from '/public/indice.jpg';
 
 import './login.css'
 
@@ -22,7 +23,7 @@ const Login = () => {
                     <button>Entrar</button>
                 </form>
 
-                <span>Não tem Conta? <a href="/registro">Criar conta</a></span>
+                <span>Não tem Conta? <Link to="/registro">Criar conta</Link></span>
 
             </div>
         </>
