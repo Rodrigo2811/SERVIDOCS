@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import logo from '/public/indice.jpg';
+import logo from '/src/images/indice.jpg';
 
 import './registro.css';
 

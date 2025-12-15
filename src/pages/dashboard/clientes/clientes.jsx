@@ -1,11 +1,18 @@
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
-import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
+import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import './clientes.css'
+import { useState } from "react";
 
 const Clientes = () => {
 
+    const [modalOpen, setModalClose] = useState(false)
+
+
+    function addCliente() {
+        setModalClose(true)
+    }
 
     function editar() {
         alert('editar')
@@ -14,6 +21,11 @@ const Clientes = () => {
 
     function excluir() {
         alert('deletar')
+    }
+
+
+    function closeModal() {
+        setModalClose(false)
     }
     return (
         <>
@@ -27,7 +39,7 @@ const Clientes = () => {
                     </div>
 
 
-                    <button className="btn-novoCliente">Novo Cliente</button>
+                    <button className="btn-novoCliente" onClick={addCliente}><BsPlus className="iconBTN" />Novo Cliente</button>
 
 
                 </header>
@@ -63,7 +75,29 @@ const Clientes = () => {
                 </div>
 
 
+                {modalOpen && (
+                    <div className="modal-addCliente" >
+                        <header>
+                            <h3>Novo Cliente</h3>
+                            <p>Preencha os dados para cadastrar um novo cliente</p>
+                        </header>
+                        <form >
 
+                            <label >Novo Completo</label><br />
+                            <input type="text" placeholder="Novo Completo" />
+                            <label >CPF</label>
+                            <input type="text" placeholder="CPF" />
+                            <label >Telefone</label><br /><br />
+                            <input type="Preço" placeholder="Telefone" />
+                            <label >Email</label><br />
+                            <input type="email" placeholder="Email" />
+                            <label >Endereço</label><br />
+                            <input type="text" placeholder="Endereço" />
+
+                            <footer><button className="btn-cancelar" onClick={closeModal}>Cancelar</button> <button className="btn-cadastrar">Cadastrar</button></footer>
+                        </form>
+                    </div>
+                )}
 
             </DashboardLayout >
 

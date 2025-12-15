@@ -1,17 +1,12 @@
-.container-clientes {
-    width: 1200px;
+.header-produtos {
     display: flex;
     justify-content: space-between;
-    flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    width: auto;
     margin: 15px 5px;
-    background-color: var(--base);
-    box-shadow: 0 0 4px 0px var(--foreGround);
-    border-radius: 8px;
-    padding: 15px;
 }
 
-.btn-novoCliente {
+.btn-novoProduto {
     padding: 4px;
     background-color: var(--button-primary);
     color: var(--secundary);
@@ -21,55 +16,21 @@
     transition: .3s ease-in-out;
     width: auto;
     height: 40px;
-    text-align: center;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.iconBTN {
+.inconBTN {
     font-size: 20px;
 }
 
-.btn-novoCliente:hover {
+.btn-novoProduto:hover {
     background-color: var(--button-effect);
 }
 
-.header-clientes {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: auto;
-    margin: 15px 5px;
-}
 
-
-
-.container-clientes input {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid var(--foreGround);
-    border-radius: 4px;
-}
-
-table,
-th,
-td {
-    height: 15px;
-    padding: 5px;
-    text-align: center;
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-
-.btn-acao {
-    width: 30px;
-    background-color: transparent;
-    border: none;
-    font-size: 20px;
-}
-
-.modal-addCliente {
+.modal-addProdutos {
     width: 450px;
     display: flex;
     flex-direction: column;
@@ -85,13 +46,13 @@ td {
     border-radius: 4px;
 }
 
-.modal-addCliente header {
+.modal-addProdutos header {
     padding: 5px;
     margin: 5px 0;
 
 }
 
-.modal-addCliente form {
+.modal-addProdutos form {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -99,14 +60,13 @@ td {
     padding: 5px;
 }
 
-.modal-addCliente form input {
+.modal-addProdutos form input {
     height: 35px;
     padding-left: 5px;
-    margin: 5px 0;
 }
 
 
-.modal-addCliente footer {
+.modal-addProdutos footer {
     display: flex;
     justify-content: end;
     gap: 5px;

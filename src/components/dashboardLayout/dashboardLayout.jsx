@@ -1,13 +1,25 @@
 import { Link } from 'react-router-dom'
 
-import logo from '/public/indice.jpg'
+import logo from '/src/images/indice.jpg'
 
 
 import { BsPerson, BsBoxSeam, BsPeople, BsCart3, BsBarChart, BsGrid1X2, BsArrowBarRight } from "react-icons/bs";
 import './dashboardLayout.css'
 
 const DashboardLayout = ({ children }) => {
+
+    function logout() {
+        const deslogar = confirm('Deseja realmente sair do sistema?');
+
+        if (!deslogar) {
+            return false
+        }
+
+        window.location.href = '/'
+    }
+
     return (
+
         <>
             <section className="container-sidebar">
                 <img src={logo} alt="" />
@@ -27,7 +39,7 @@ const DashboardLayout = ({ children }) => {
                     <span></span>
                     <span></span>
                 </div>
-                <button className='btn-sair'><BsArrowBarRight />Sair</button>
+                <button className='btn-sair' onClick={logout}><BsArrowBarRight />Sair</button>
             </section >
             <div className='main'>
                 {children}

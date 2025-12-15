@@ -3,7 +3,7 @@ import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout
 import Card from "../../../components/card/card";
 
 
-import { BsPerson } from 'react-icons/bs'
+import { BsPerson, BsFillShieldLockFill } from 'react-icons/bs'
 
 import './usuarios.css'
 
@@ -34,7 +34,7 @@ const Usuarios = () => {
                     <Card
 
                         title='Administradores'
-                        icon={''}
+                        icon={<BsFillShieldLockFill />}
                         qtd={1}
                         description='Com permissões administrativas'
                     />

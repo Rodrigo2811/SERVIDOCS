@@ -39,7 +39,7 @@
 }
 
 .container-rodape ul li::marker {
-    color: orange;
+    color: var(--button-effect);
 
 }
 
