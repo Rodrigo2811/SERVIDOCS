@@ -1,9 +1,31 @@
+import { useState } from "react";
 import Card from "../../components/card/card";
 import DashboardLayout from "../../components/dashboardLayout/dashboardLayout";
 import { BsPerson, BsBoxSeam, BsCart3, BsCurrencyDollar } from "react-icons/bs";
 
 import './dashboard.css'
+
+
+const LOCAL_STORAGE_PRODUTOS = 'produtosEstoque';
+const LOCAL_STORAGE_CLIENTES = 'clientesCadastrados'
+
 const Dashboard = () => {
+
+
+    const [produtos] = useState(() => {
+        const storedProducts = localStorage.getItem(LOCAL_STORAGE_PRODUTOS);
+
+        return storedProducts ? JSON.parse(storedProducts) : [];
+    });
+    const [clientes] = useState(() => {
+        const storedClientes = localStorage.getItem(LOCAL_STORAGE_CLIENTES)
+        return storedClientes ? JSON.parse(storedClientes) : []
+    })
+
+
+    const totalClientes = clientes.length
+    const totalProdutos = produtos.length;
+
     return (
         <>
             <DashboardLayout>
@@ -20,7 +42,7 @@ const Dashboard = () => {
 
                         title='Total de Clientes'
                         icon={<BsPerson />}
-                        qtd={0}
+                        qtd={totalClientes}
                         description='Clientes cadastrados'
                     />
 
@@ -28,7 +50,7 @@ const Dashboard = () => {
 
                         title='Total de Produtos'
                         icon={<BsBoxSeam />}
-                        qtd={0}
+                        qtd={totalProdutos}
                         description='Produtos cadastrados'
                     />
 

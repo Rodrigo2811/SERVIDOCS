@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
@@ -6,19 +6,29 @@ import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import './clientes.css'
 
+const LOCAL_STORAGE_KEY = 'clientesCadastrados'
 
 const Clientes = () => {
 
-    const [clientes, setCLientes] = useState([])
+    const [clientes, setClientes] = useState(() => {
+        const storedClientes = localStorage.getItem(LOCAL_STORAGE_KEY)
+        return storedClientes ? JSON.parse(storedClientes) : []
+    })
 
     const [modalOpen, setModalClose] = useState(false);
     const [cliente, setCliente] = useState({
+        id: null,
         nome: '',
         cpf: '',
         email: '',
         telefone: '',
         endereco: ''
     })
+
+    useEffect(() => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(clientes))
+    }, [clientes])
+
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -32,6 +42,7 @@ const Clientes = () => {
 
     function addCliente() {
         setCliente({
+            id: null,
             nome: '',
             cpf: '',
             email: '',
@@ -43,13 +54,17 @@ const Clientes = () => {
 
     function salvarCliente(e) {
         e.preventDefault()
-        setCLientes(prevClientes => [...prevClientes, cliente])
 
-        console.log('CLiente salvo:', cliente)
+        if (!cliente.nome || !cliente.cpf || !cliente.email || !cliente.telefone || !cliente.endereco) {
+            alert('Por favor, preencha todos os campos obrigatórios')
+            return;
+        }
+
+        const novoCliente = { ...cliente, id: Date.now() }
+
+        setClientes(prevClientes => [...prevClientes, novoCliente])
 
         addCliente()
-
-        console.log(clientes)
     }
 
     function editar() {
@@ -57,15 +72,12 @@ const Clientes = () => {
     }
 
 
-    function excluir() {
-        alert('deletar')
+    function removerCliente(id) {
+        setClientes(prevClientes => prevClientes.filter(c => c.id !== id))
+        alert('Cliente removido com sucesso')
     }
 
-
-    function closeModal() {
-        setModalClose(false)
-    }
-
+    const totalClientes = clientes.length
 
     return (
         <>
@@ -84,31 +96,39 @@ const Clientes = () => {
 
                 <div className="container-clientes">
                     <h3>Lista de Clientes</h3>
-                    <p>Total de 0 clientes cadastrados</p>
+                    <p>Total de {totalClientes} clientes cadastrados</p>
                     <input type="text" placeholder="Pesquisar Cliente" />
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>CPF</th>
-                                <th>Email</th>
-                                <th>Telefone</th>
-                                <th>Ações</th>
-                            </tr>
+                    {clientes.length <= 0 ? (
+                        <h4>Sem clientes cadastrados</h4>
+                    ) : (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>CPF</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Ações</th>
+                                </tr>
 
-                        </thead>
+                            </thead>
 
-                        <tbody>
-                            <tr>
-                                <td>Rodrigo</td>
-                                <td>111.000.000-01</td>
-                                <td>teste@teste.com</td>
-                                <td>71 3356-1875</td>
-                                <td><button className="btn-acao" onClick={editar}><BsFillPencilFill /></button> <button className="btn-acao" onClick={excluir}><BsFillTrashFill /></button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <tbody>
+                                {clientes.map(c => (
+                                    <tr key={c.id}>
+                                        <td>{c.nome}</td>
+                                        <td>{c.cpf}</td>
+                                        <td>{c.email}</td>
+                                        <td>{c.telefone}</td>
+
+                                        <td><button className="btn-acao" onClick={editar}><BsFillPencilFill /></button>
+                                            <button className="btn-acao" onClick={() => removerCliente(c.id)}><BsFillTrashFill /></button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
 
                 </div>
 
@@ -132,7 +152,7 @@ const Clientes = () => {
                             <label >Endereço</label><br />
                             <input type="text" name="endereco" placeholder="Endereço" onChange={handleChange} value={cliente.endereco} />
 
-                            <footer><button className="btn-cancelar" onClick={closeModal}>Cancelar</button> <button className="btn-cadastrar" type="submit">Cadastrar</button></footer>
+                            <footer><button className="btn-cancelar" onClick={() => setModalClose()}>Cancelar</button> <button className="btn-cadastrar" type="submit">Cadastrar</button></footer>
                         </form>
                     </div>
                 )}
