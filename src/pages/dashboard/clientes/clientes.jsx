@@ -1,17 +1,55 @@
+import { useState } from "react";
+
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
 import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import './clientes.css'
-import { useState } from "react";
+
 
 const Clientes = () => {
 
-    const [modalOpen, setModalClose] = useState(false)
+    const [clientes, setCLientes] = useState([])
+
+    const [modalOpen, setModalClose] = useState(false);
+    const [cliente, setCliente] = useState({
+        nome: '',
+        cpf: '',
+        email: '',
+        telefone: '',
+        endereco: ''
+    })
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+
+        setCliente(prevCliente => ({
+            ...prevCliente, [name]: value
+        }))
+
+    }
 
 
     function addCliente() {
+        setCliente({
+            nome: '',
+            cpf: '',
+            email: '',
+            telefone: '',
+            endereco: ''
+        })
         setModalClose(true)
+    }
+
+    function salvarCliente(e) {
+        e.preventDefault()
+        setCLientes(prevClientes => [...prevClientes, cliente])
+
+        console.log('CLiente salvo:', cliente)
+
+        addCliente()
+
+        console.log(clientes)
     }
 
     function editar() {
@@ -27,6 +65,8 @@ const Clientes = () => {
     function closeModal() {
         setModalClose(false)
     }
+
+
     return (
         <>
             <DashboardLayout>
@@ -38,9 +78,7 @@ const Clientes = () => {
 
                     </div>
 
-
                     <button className="btn-novoCliente" onClick={addCliente}><BsPlus className="iconBTN" />Novo Cliente</button>
-
 
                 </header>
 
@@ -81,20 +119,20 @@ const Clientes = () => {
                             <h3>Novo Cliente</h3>
                             <p>Preencha os dados para cadastrar um novo cliente</p>
                         </header>
-                        <form >
+                        <form onSubmit={salvarCliente}>
 
                             <label >Novo Completo</label><br />
-                            <input type="text" placeholder="Novo Completo" />
+                            <input type="text" name="nome" placeholder="Novo Completo" value={cliente.nome} onChange={handleChange} />
                             <label >CPF</label>
-                            <input type="text" placeholder="CPF" />
+                            <input type="text" name="cpf" placeholder="CPF" onChange={handleChange} value={cliente.cpf} />
                             <label >Telefone</label><br /><br />
-                            <input type="Preço" placeholder="Telefone" />
+                            <input type="Preço" name="telefone" placeholder="Telefone" onChange={handleChange} value={cliente.telefone} />
                             <label >Email</label><br />
-                            <input type="email" placeholder="Email" />
+                            <input type="email" name="email" placeholder="Email" onChange={handleChange} value={cliente.email} />
                             <label >Endereço</label><br />
-                            <input type="text" placeholder="Endereço" />
+                            <input type="text" name="endereco" placeholder="Endereço" onChange={handleChange} value={cliente.endereco} />
 
-                            <footer><button className="btn-cancelar" onClick={closeModal}>Cancelar</button> <button className="btn-cadastrar">Cadastrar</button></footer>
+                            <footer><button className="btn-cancelar" onClick={closeModal}>Cancelar</button> <button className="btn-cadastrar" type="submit">Cadastrar</button></footer>
                         </form>
                     </div>
                 )}
