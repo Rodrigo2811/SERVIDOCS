@@ -85,3 +85,95 @@ label {
     font-weight: 400;
 
 }
+
+.results-dropdown {
+    position: absolute;
+
+    width: 52%;
+
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 10;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 100px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.result-item:hover {
+    background-color: #f0f0f0;
+}
+
+.product-price {
+    font-weight: bold;
+    color: green;
+}
+
+.add-icon {
+    color: var(--primary-color);
+
+    margin-left: 10px;
+}
+
+
+.cart-items-list {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.item-details {
+    flex-grow: 1;
+}
+
+.item-name {
+    display: block;
+    font-weight: 500;
+}
+
+.item-price {
+    font-size: 0.8em;
+    color: #555;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.qty-btn,
+.remove-btn {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.remove-btn {
+    color: #dc3545;
+}
+
+.item-total {
+    font-weight: bold;
+    min-width: 60px;
+    /* Para alinhar totais */
+    text-align: right;
+}

@@ -1,10 +1,45 @@
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
 
-import { BsCurrencyDollar } from 'react-icons/bs'
+import { BsCCircle, BsCurrencyDollar } from 'react-icons/bs'
 
 import './caixa.css'
+
+import { useState } from "react";
+
+
+const LOCAL_STORAGE_ESTOQUE = 'produtosEstoque';
+
 const Caixa = () => {
+
+    const [searchTem, setSearchTerm] = useState('')
+    const [foundProducts, setFoudProducts] = useState([])
+
+    function handleSearch(e) {
+        const term = e.target.value;
+        setSearchTerm(term)
+
+        if (term.trim() === '') {
+            setFoudProducts([])
+            return;
+        }
+
+        try {
+            const productJson = localStorage.getItem(LOCAL_STORAGE_ESTOQUE);
+            const allProducts = productJson ? JSON.parse(productJson) : []
+
+            const filtered = allProducts.filter(product =>
+                product.nome.toLowerCase().includes(term.toLowerCase()) ||
+                String(product.id).includes(term)
+            )
+            setFoudProducts(filtered)
+        } catch (error) {
+            console.error('Erro ao buscar ou analisar produtos:', error);
+            setFoudProducts([])
+        }
+    }
+
+
 
     function finalizarVenda(e) {
         e.preventDefault()
@@ -25,7 +60,20 @@ const Caixa = () => {
                 <div className="container-listaProdutos">
                     <h3>Adicionar Produtos</h3>
                     <p>Busque e adicione produtos à venda</p>
-                    <input type="text" className="inputPesquisaProduto" placeholder="Buscar Produto..." />
+                    <input type="text" value={searchTem} onChange={handleSearch} className="inputPesquisaProduto" placeholder="Buscar Produto..." />
+
+                    {foundProducts.length > 0 && (
+                        <div className="results-dropdown">
+                            {foundProducts.map(product => (
+                                <div key={product.id} className="result-item">
+                                    <span>{product.nome}</span>
+                                    <span className="product-price">{parseFloat(product.preco).toFixed(2)}</span>
+                                    <BsCCircle />
+                                </div>
+                            ))}
+
+                        </div>
+                    )}
                 </div>
 
                 <div className="container-carrinho">
