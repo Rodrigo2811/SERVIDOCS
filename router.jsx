@@ -8,6 +8,7 @@ import Produtos from './src/pages/dashboard/produtos/produtos';
 import Caixa from './src/pages/dashboard/caixa/caixa';
 import Relatorios from './src/pages/dashboard/relatorios/relatorios';
 import Usuarios from './src/pages/dashboard/usuarios/usuarios';
+import Despesas from './src/pages/dashboard/despesas/despesas';
 
 const Rotas = () => {
     return (
@@ -20,6 +21,7 @@ const Rotas = () => {
                 <Route path='/Clientes' element={<Clientes />} />
                 <Route path='/Produtos' element={<Produtos />} />
                 <Route path='/Caixa' element={<Caixa />} />
+                <Route path='/Despesas' element={<Despesas />} />
                 <Route path='/Relatorios' element={<Relatorios />} />
                 <Route path='/usuarios' element={<Usuarios />} />
 

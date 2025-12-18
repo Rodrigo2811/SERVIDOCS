@@ -45,6 +45,7 @@ body {
     border: 2px solid rgb(213, 213, 213);
     outline: none;
     box-shadow: 0 0 4px 2px var(--primary-foreGround);
+    padding-left: 5px;
 }
 
 .form-login input:focus {

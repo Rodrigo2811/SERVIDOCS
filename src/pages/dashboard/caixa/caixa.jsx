@@ -9,6 +9,7 @@ import { useState } from "react";
 
 
 const LOCAL_STORAGE_ESTOQUE = 'produtosEstoque';
+const LOCAL_STORAGE_CLIENTE = 'clientesCadastrados'
 
 const Caixa = () => {
 
@@ -82,6 +83,9 @@ const Caixa = () => {
                     <label >Selecione um Cliente(Opcional)</label>
                     <select>
                         <option value="Selecione um cliente">Selecione um Cliente</option>
+                        {
+
+                        }
                     </select>
 
                     <label>Forma de Pagamento</label>

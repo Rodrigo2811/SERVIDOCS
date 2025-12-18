@@ -29,6 +29,7 @@ const DashboardLayout = ({ children }) => {
                         <li><Link to={'/Clientes'}><BsPeople className='icon' />Clientes </Link></li>
                         <li><Link to={'/Produtos'}><BsBoxSeam className='icon' /> Produtos</Link></li>
                         <li><Link to={'/Caixa'}><BsCart3 className='icon' /> Frente de Caixa</Link></li>
+                        <li><Link to={'/Despesas'}><BsCart3 className='icon' /> Despesas</Link></li>
                         <li><Link to={'/Relatorios'}><BsBarChart className='icon' />Relatórios</Link></li>
                         <li><Link to={'/Usuarios'}><BsPerson className='icon' /> Usuários</Link></li>
                     </ul>
