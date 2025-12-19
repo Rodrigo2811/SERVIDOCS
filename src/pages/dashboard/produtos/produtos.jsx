@@ -121,7 +121,7 @@ const Produtos = () => {
 
                 </header>
 
-                <div className="navCard-produtos" >
+                <div className="navCard-user">
 
                     <Card
                         title={'Total de Produtos'}

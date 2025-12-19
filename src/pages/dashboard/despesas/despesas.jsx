@@ -11,6 +11,9 @@ const Despesas = () => {
     const [modalOpen, setModalOpen] = useState(false)
 
 
+    function cadastrarDespesa(e) {
+        e.preventDefault()
+    }
 
 
     return (
@@ -90,7 +93,7 @@ const Despesas = () => {
                                 <h3>Nova Despesa</h3>
                                 <p>Preencha os dados para cadastrar uma nova despesa</p>
                             </header>
-                            <form onSubmit={''}>
+                            <form onSubmit={cadastrarDespesa}>
 
                                 <label htmlFor="nome">Descrição Despesa</label><br />
 

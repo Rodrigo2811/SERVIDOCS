@@ -6,26 +6,6 @@
     margin: 15px 5px;
 }
 
-
-.container-produtos {
-    width: auto;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    gap: 10px;
-    margin: 15px 5px;
-    background-color: var(--base);
-    box-shadow: 0 0 4px 0px var(--foreGround);
-    border-radius: 8px;
-    padding: 15px;
-}
-
-.navCard-produtos {
-    display: flex;
-    margin: 15px 5px;
-    gap: 10px;
-}
-
 .btn-novoProduto {
     padding: 4px;
     background-color: var(--button-primary);
@@ -109,22 +89,4 @@
     padding: 5px;
     border-radius: 4px;
     border: none;
-}
-
-
-@media screen and (width <=1200px) {
-    .main {
-        display: block;
-    }
-
-    .container-card {
-        width: 100%;
-        height: auto;
-        margin: 10px auto;
-    }
-
-    .navCard-produtos {
-        display: block;
-        gap: 10px;
-    }
 }

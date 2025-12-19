@@ -14,7 +14,7 @@ const DashboardLayout = ({ children }) => {
         if (!deslogar) {
             return false
         }
-
+        localStorage.removeItem('logado')
         window.location.href = '/'
     }
 

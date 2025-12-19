@@ -21,6 +21,7 @@ const Login = () => {
         }
 
         if (email === "rodrigo@email.com" && password === "123") {
+            localStorage.setItem('logado', email)
             alert(email + ' Logado com sucesso!')
             window.location = '/dashboard'
         }
