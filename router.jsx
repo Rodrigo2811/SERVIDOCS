@@ -9,6 +9,7 @@ import Caixa from './src/pages/dashboard/caixa/caixa';
 import Relatorios from './src/pages/dashboard/relatorios/relatorios';
 import Usuarios from './src/pages/dashboard/usuarios/usuarios';
 import Despesas from './src/pages/dashboard/despesas/despesas';
+import Page404 from './src/pages/notFound/page404';
 
 const Rotas = () => {
     return (
@@ -24,6 +25,8 @@ const Rotas = () => {
                 <Route path='/Despesas' element={<Despesas />} />
                 <Route path='/Relatorios' element={<Relatorios />} />
                 <Route path='/usuarios' element={<Usuarios />} />
+
+                <Route path='*' element={<Page404 />} />
 
             </Routes>
         </BrowserRouter>
