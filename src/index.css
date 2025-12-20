@@ -32,3 +32,11 @@
 .main {
   padding: 10px;
 }
+
+
+@media screen and (width > 1200px) {
+  .main {
+    width: 1600px
+  }
+
+}

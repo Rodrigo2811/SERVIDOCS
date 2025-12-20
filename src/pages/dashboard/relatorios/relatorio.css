@@ -44,3 +44,10 @@
 .container-formaDePagamento ul li span {
     font-weight: 700;
 }
+
+@media screen and (width > 1201px) {
+    .container {
+        width: 100%
+    }
+
+}

@@ -138,7 +138,7 @@ const Produtos = () => {
                 </div>
 
 
-                <div className="container-usuarios" >
+                <div className="container-produtos" >
                     <h3>Lista de Produtos</h3>
 
                     {produtos.length === 0 ? (

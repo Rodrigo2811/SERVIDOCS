@@ -21,3 +21,10 @@
     margin: 15px 5px;
     gap: 10px;
 }
+
+@media screen and (width > 1201px) {
+    .container-usuarios {
+        width: 1570px
+    }
+
+}
