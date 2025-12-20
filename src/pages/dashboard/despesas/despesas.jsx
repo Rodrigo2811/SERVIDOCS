@@ -1,18 +1,77 @@
+import { useEffect, useState } from "react"
+
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout"
 import Card from "../../../components/card/card"
 
 import { BsPlus, BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs'
 
-import './despesas.css'
-import { useState } from "react"
+import { FormData } from "../../../components/util/util"
 
+import './despesas.css'
+
+const LOCAL_STORAGE_KEY = 'despesasCadastradas'
 const Despesas = () => {
 
-    const [modalOpen, setModalOpen] = useState(false)
 
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const [despesas, setDespesas] = useState(() => {
+
+        const storedDespesas = localStorage.getItem(LOCAL_STORAGE_KEY)
+        return storedDespesas ? JSON.parse(storedDespesas) : []
+    })
+
+    const [despesa, setDespesa] = useState({
+        id: null,
+        nome: '',
+        valor: '',
+        vencimento: '',
+        status: ''
+    })
+
+    useEffect(() => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(despesas))
+    }, [despesas])
+
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+
+        setDespesa(prevDespesa => ({
+            ...prevDespesa, [name]: value
+        }))
+    }
+
+    function addDespesa() {
+        setDespesa({
+            id: null,
+            nome: '',
+            valor: '',
+            vencimento: '',
+            status: ''
+        })
+        setModalOpen(false)
+    }
 
     function cadastrarDespesa(e) {
         e.preventDefault()
+
+        if (!despesa.nome || !despesa.valor || !despesa.vencimento || !despesa.status) {
+            alert('Por favor, preencha todos os campos obrigatórios.')
+            return;
+        }
+
+        const novaDespesa = { ...despesa, id: Date.now() }
+
+        setDespesas(prevDespesas => [...prevDespesas, novaDespesa])
+
+        addDespesa()
+    }
+
+
+    function removerDespesa(id) {
+        setDespesas(prevDespesas => prevDespesas.filter(d => d.id !== id))
+        alert('Despesa removida com sucesso')
     }
 
 
@@ -54,36 +113,40 @@ const Despesas = () => {
                     <h3>Lista de Despesas</h3>
 
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Despesa</th>
-                                <th>Valor</th>
-                                <th>Vencimento</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
+                    {despesas.length <= 0 ? (
+                        <h4>Sem despesas cadastradas</h4>
+                    ) : (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Despesa</th>
+                                    <th>Valor</th>
+                                    <th>Vencimento</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
 
-                        </thead>
+                            </thead>
 
-                        <tbody>
+                            <tbody>
+                                {despesas.map(d => (
+                                    <tr key={d.id}>
+                                        <td>{d.nome}</td>
+                                        <td>{Number(d.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                                        <td>{FormData(d.vencimento)}</td>
+                                        <td>{d.status}</td>
+                                        <td>
+                                            <button className="btn-acao" ><BsFillPencilFill /></button>
+                                            <button className="btn-acao" onClick={() => removerDespesa(d.id)}><BsFillTrashFill /></button>
+                                        </td>
+                                    </tr>
+                                ))}
 
 
-                            <tr >
-                                <td>Internet</td>
-                                <td>80.00</td>
-                                <td>20/12/2025</td>
-                                <td>Agentada</td>
 
-                                <td>
-
-                                    <button className="btn-acao" ><BsFillPencilFill /></button>
-                                    <button className="btn-acao" ><BsFillTrashFill /></button>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 {
@@ -99,42 +162,48 @@ const Despesas = () => {
 
                                 <input
                                     type="text"
-                                    id="despesa"
-                                    name="despesa"
+                                    name="nome"
                                     placeholder="Nome da despesa"
-
+                                    onChange={handleChange}
+                                    value={despesa.nome}
                                     required
                                 />
 
                                 <label htmlFor="categoria">Valor</label>
                                 <input
                                     type="Number"
-                                    id="valor"
+
                                     name="valor"
                                     placeholder="valor"
+                                    onChange={handleChange}
+                                    value={despesa.valor}
                                     required
                                 />
 
                                 <label htmlFor="preco">Vencimento</label><br /><br />
                                 <input
                                     type="date"
-                                    id="data"
-                                    name="data"
+
+                                    name="vencimento"
                                     placeholder="Data"
+                                    onChange={handleChange}
+                                    value={despesa.vencimento}
                                     required
                                 />
 
                                 <label htmlFor="status">Status</label><br />
 
                                 <select
-                                    id="status"
+
                                     name="status"
+                                    onChange={handleChange}
+                                    value={despesa.status}
                                     required
                                 >
-                                    <option value="">Selecione o Status</option>
-                                    <option value="Disponivel">Agendada</option>
-                                    <option value="Indisponivel">Pago</option>
-                                    <option value="Indisponivel">Vencida</option>
+                                    <option value="" name='status' onChange={handleChange} >Selecione o Status</option>
+                                    <option value={'Agendada'}>Agendada</option>
+                                    <option value={'Pago'}>Pago</option>
+                                    <option value={'Vencida'}>Vencida</option>
                                 </select>
 
 

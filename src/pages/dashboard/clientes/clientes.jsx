@@ -9,13 +9,13 @@ import './clientes.css'
 const LOCAL_STORAGE_KEY = 'clientesCadastrados'
 
 const Clientes = () => {
-
+    const [modalOpen, setModalClose] = useState(false);
     const [clientes, setClientes] = useState(() => {
         const storedClientes = localStorage.getItem(LOCAL_STORAGE_KEY)
         return storedClientes ? JSON.parse(storedClientes) : []
     })
 
-    const [modalOpen, setModalClose] = useState(false);
+
     const [cliente, setCliente] = useState({
         id: null,
         nome: '',

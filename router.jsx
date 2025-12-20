@@ -18,9 +18,9 @@ const Rotas = () => {
             <AuthProvider>
                 <Routes>
                     <Route path='/' element={<Login />} />
-                    <Route path='/registro' element={<Registrar />} />
+                    <Route path='/Registro' element={<Registrar />} />
 
-                    <Route path='/dashboard' element={<PrivateRoute> <Dashboard /> </PrivateRoute>} />
+                    <Route path='/Dashboard' element={<PrivateRoute> <Dashboard /> </PrivateRoute>} />
                     <Route path='/Clientes' element={<PrivateRoute><Clientes /></PrivateRoute>} />
                     <Route path='/Produtos' element={<PrivateRoute><Produtos /></PrivateRoute>} />
                     <Route path='/Caixa' element={<PrivateRoute><Caixa /></PrivateRoute>} />
