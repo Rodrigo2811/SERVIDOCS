@@ -1,5 +1,5 @@
 .container-card {
-    min-width: 300px;
+    min-width: 240px;
     height: 140px;
     background-color: var(--base);
     box-shadow: 0 0 4px 0px var(--foreGround);

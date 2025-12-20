@@ -1,13 +1,14 @@
 import { useState } from "react";
 import Card from "../../components/card/card";
 import DashboardLayout from "../../components/dashboardLayout/dashboardLayout";
-import { BsPerson, BsBoxSeam, BsCart3, BsCurrencyDollar } from "react-icons/bs";
+import { BsPerson, BsBoxSeam, BsCart3, BsCurrencyDollar, BsCalculatorFill } from "react-icons/bs";
 
 import './dashboard.css'
 
 
 const LOCAL_STORAGE_PRODUTOS = 'produtosEstoque';
 const LOCAL_STORAGE_CLIENTES = 'clientesCadastrados'
+const LOCAL_STORAGE_DESPESAS = 'despesasCadastradas'
 
 const Dashboard = () => {
 
@@ -22,9 +23,16 @@ const Dashboard = () => {
         return storedClientes ? JSON.parse(storedClientes) : []
     })
 
+    const [despesas] = useState(() => {
+        const storedDespesas = localStorage.getItem(LOCAL_STORAGE_DESPESAS)
+        return storedDespesas ? JSON.parse(storedDespesas) : []
+
+    })
+
 
     const totalClientes = clientes.length
     const totalProdutos = produtos.length;
+    const totalDespesas = despesas.length
 
     return (
         <>
@@ -61,7 +69,13 @@ const Dashboard = () => {
                         qtd={0}
                         description='Vendas realizadas  '
                     />
+                    <Card
 
+                        title='Total de Despesas'
+                        icon={<BsCalculatorFill />}
+                        qtd={totalDespesas}
+                        description='Despesas'
+                    />
                     <Card
 
                         title='Receita Total'
@@ -82,6 +96,7 @@ const Dashboard = () => {
                         <li><span>Clientes:</span> Cadastre e gerencie seus clientes</li>
                         <li><span>Produtos:</span> Controle seu estoque e preços</li>
                         <li><span>Frente de Caixa:</span> Realize vendas de forma rápida e eficiente</li>
+                        <li><span>Despesas:</span> Cadastre e gerencie suas despesas</li>
                         <li><span>Relatórios:</span> Acompanhe o desempenho do seu negócio</li>
                     </ul>
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import logo from '/src/images/indice.jpg'
 
 
-import { BsPerson, BsBoxSeam, BsPeople, BsCart3, BsBarChart, BsGrid1X2, BsArrowBarRight } from "react-icons/bs";
+import { BsPerson, BsBoxSeam, BsPeople, BsCart3, BsBarChart, BsGrid1X2, BsArrowBarRight, BsCalculatorFill } from "react-icons/bs";
 import './dashboardLayout.css'
 
 const DashboardLayout = ({ children }) => {
@@ -29,7 +29,7 @@ const DashboardLayout = ({ children }) => {
                         <li><Link to={'/Clientes'}><BsPeople className='icon' />Clientes </Link></li>
                         <li><Link to={'/Produtos'}><BsBoxSeam className='icon' /> Produtos</Link></li>
                         <li><Link to={'/Caixa'}><BsCart3 className='icon' /> Frente de Caixa</Link></li>
-                        <li><Link to={'/Despesas'}><BsCart3 className='icon' /> Despesas</Link></li>
+                        <li><Link to={'/Despesas'}><BsCalculatorFill className='icon' /> Despesas</Link></li>
                         <li><Link to={'/Relatorios'}><BsBarChart className='icon' />Relatórios</Link></li>
                         <li><Link to={'/Usuarios'}><BsPerson className='icon' /> Usuários</Link></li>
                     </ul>

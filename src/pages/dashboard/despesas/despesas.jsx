@@ -75,6 +75,9 @@ const Despesas = () => {
     }
 
 
+    const qtdDespesas = despesas.length
+    const totalDespesas = despesas.reduce((acc, d) => acc + Number(d.valor), 0)
+
     return (
         <>
             <DashboardLayout>
@@ -94,17 +97,17 @@ const Despesas = () => {
                 <div className="navCard">
                     <Card
 
-                        title='Total de Despesas'
+                        title='Quantidade de Despesas'
                         icon={''}
-                        qtd={0}
+                        qtd={qtdDespesas}
                         description='Despesas cadastrados'
                     />
 
                     <Card
 
-                        title='Total de Produtos'
+                        title='Total Despesas'
                         icon={''}
-                        qtd={'R$ ' + Number(0).toFixed(2)}
+                        qtd={'R$ ' + (totalDespesas).toFixed(2)}
                         description='Produtos cadastrados'
                     />
                 </div>
