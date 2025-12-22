@@ -53,7 +53,7 @@ const Clientes = () => {
     }
 
     function salvarCliente(e) {
-        e.preventDefault()
+        e.preventDefault();
 
         if (!cliente.nome || !cliente.cpf || !cliente.email || !cliente.telefone || !cliente.endereco) {
             alert('Por favor, preencha todos os campos obrigatórios')

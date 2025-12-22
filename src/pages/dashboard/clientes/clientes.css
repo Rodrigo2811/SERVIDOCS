@@ -130,13 +130,3 @@ td {
     border-radius: 4px;
     border: none;
 }
-
-@media screen and (width > 1200px) {
-
-
-    .container-clientes {
-        width: 100%;
-    }
-
-
-}

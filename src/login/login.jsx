@@ -19,14 +19,20 @@ const Login = () => {
             alert('Preencha os campos')
             return
         }
+        const userSalvos = JSON.parse(localStorage.getItem('userCadastrados') || "[]");
 
-        if (email === "rodrigo@email.com" && password === "123") {
+        const userEncontrato = userSalvos.find(user => user.email === email && user.password === String(password));
+
+        if (userEncontrato) {
             localStorage.setItem('logado', email)
             alert(email + ' Logado com sucesso!')
-            window.location = '/dashboard'
+            window.location.href = '/Dashboard'
+        } else {
+            alert('Email ou senha incorretos')
         }
-
     }
+
+
 
     return (
         <>

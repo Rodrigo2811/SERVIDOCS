@@ -78,14 +78,3 @@
     border-radius: 4px;
     border: none;
 }
-
-
-
-@media screen and (width > 1200px) {
-
-    .container-despesas {
-        width: 100%;
-    }
-
-
-}
