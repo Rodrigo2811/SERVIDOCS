@@ -92,6 +92,10 @@ const Produtos = () => {
         setModalOpen(true)
     }
 
+    function editar(id) {
+        alert('editar' + id)
+    }
+
 
     function removerProduto(id) {
 
@@ -168,7 +172,7 @@ const Produtos = () => {
                                         <td>{p.status}</td>
                                         <td>
 
-                                            <button className="btn-acao" ><BsFillPencilFill /></button>
+                                            <button className="btn-acao" onClick={() => editar(Produtos.id)}><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerProduto(p.id)}><BsFillTrashFill /></button>
                                         </td>
                                     </tr>

@@ -67,8 +67,8 @@ const Clientes = () => {
         addCliente()
     }
 
-    function editar() {
-        alert('editar')
+    function editar(id) {
+        alert('editar' + id)
     }
 
 
@@ -122,7 +122,7 @@ const Clientes = () => {
                                         <td>{c.email}</td>
                                         <td>{c.telefone}</td>
 
-                                        <td><button className="btn-acao" onClick={editar}><BsFillPencilFill /></button>
+                                        <td><button className="btn-acao" onClick={() => editar(c.id)}><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerCliente(c.id)}><BsFillTrashFill /></button></td>
                                     </tr>
                                 ))}

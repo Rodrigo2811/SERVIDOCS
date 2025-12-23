@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import logo from '/src/images/indice.jpg';
 
+import { dataRegistro } from '../components/util/util';
+
 import './registro.css';
-import { useEffect, useState } from 'react';
 
 
 const LOCAL_STORAGE_KEY = 'userCadastrados'
@@ -16,11 +18,13 @@ const Registrar = () => {
     })
 
     const [usuario, setUsuario] = useState({
+        data: dataRegistro(),
         id: null,
         nome_completo: '',
         email: '',
         tipo_usuario: '',
-        password: ''
+        password: '',
+        conf_senha: ''
     })
 
 
@@ -37,6 +41,7 @@ const Registrar = () => {
 
     function addUser() {
         setUsuario({
+            data: dataRegistro(),
             id: null,
             nome_completo: '',
             email: '',
@@ -82,6 +87,7 @@ const Registrar = () => {
                     <input type="email" id='email' name="email" value={usuario.email} onChange={handleChange} />
                     <label htmlFor="">Tipo de usuário</label>
                     <select name="tipo_usuario" id='tipo_usuario' value={usuario.tipo_usuario} onChange={handleChange}>
+                        <option value=""></option>
                         <option value="Operador">Operador</option>
                         <option value="Administrador">Administrador</option>
                     </select>

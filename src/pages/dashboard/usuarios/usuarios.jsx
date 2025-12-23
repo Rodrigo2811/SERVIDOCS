@@ -1,3 +1,4 @@
+import { useState } from "react";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout"
 
 import Card from "../../../components/card/card";
@@ -7,7 +8,24 @@ import { BsPerson, BsFillShieldLockFill } from 'react-icons/bs'
 
 import './usuarios.css'
 
+const LOCAL_STORAGE_KEY = 'userCadastrados'
+
 const Usuarios = () => {
+
+    const [user] = useState(() => {
+        const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY)
+
+        return storedUser ? JSON.parse(storedUser) : []
+    })
+
+    const listaAdm = user.filter(ad => ad.tipo_usuario === "Administrador")
+
+
+    let totalAdm = listaAdm.length
+    let totalUsuarios = user.length
+
+
+
     return (
         <>
 
@@ -27,7 +45,7 @@ const Usuarios = () => {
                     <Card
                         title='Total de Usuários'
                         icon={<BsPerson />}
-                        qtd={0}
+                        qtd={totalUsuarios}
                         description='Usuários cadastrados'
                     />
 
@@ -35,7 +53,7 @@ const Usuarios = () => {
 
                         title='Administradores'
                         icon={<BsFillShieldLockFill />}
-                        qtd={1}
+                        qtd={totalAdm}
                         description='Com permissões administrativas'
                     />
                 </div>
@@ -56,12 +74,14 @@ const Usuarios = () => {
                         </thead>
 
                         <tbody>
-                            <tr>
-                                <td>Rodrigo</td>
-                                <td>teste@teste.com</td>
-                                <td>Administrador</td>
-                                <td>11/12/2025</td>
-                            </tr>
+                            {user.map(u => (
+                                <tr key={u.id}>
+                                    <td>{u.nome_completo}</td>
+                                    <td>{u.email}</td>
+                                    <td>{u.tipo_usuario}</td>
+                                    <td>{u.data}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
 

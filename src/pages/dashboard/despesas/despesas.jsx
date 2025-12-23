@@ -68,6 +68,10 @@ const Despesas = () => {
         addDespesa()
     }
 
+    function editar(id) {
+        alert('editar' + id)
+    }
+
 
     function removerDespesa(id) {
         setDespesas(prevDespesas => prevDespesas.filter(d => d.id !== id))
@@ -139,7 +143,7 @@ const Despesas = () => {
                                         <td>{FormData(d.vencimento)}</td>
                                         <td>{d.status}</td>
                                         <td>
-                                            <button className="btn-acao" ><BsFillPencilFill /></button>
+                                            <button className="btn-acao" onClick={() => editar(d.id)} ><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerDespesa(d.id)}><BsFillTrashFill /></button>
                                         </td>
                                     </tr>
