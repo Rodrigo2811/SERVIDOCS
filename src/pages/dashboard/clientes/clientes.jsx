@@ -5,6 +5,7 @@ import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout
 import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import './clientes.css'
+import { formataTel, formataCPF } from "../../../components/util/util";
 
 const LOCAL_STORAGE_KEY = 'clientesCadastrados'
 
@@ -118,9 +119,9 @@ const Clientes = () => {
                                 {clientes.map(c => (
                                     <tr key={c.id}>
                                         <td>{c.nome}</td>
-                                        <td>{c.cpf}</td>
+                                        <td>{formataCPF(c.cpf)}</td>
                                         <td>{c.email}</td>
-                                        <td>{c.telefone}</td>
+                                        <td>{formataTel(c.telefone)}</td>
 
                                         <td><button className="btn-acao" onClick={() => editar(c.id)}><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerCliente(c.id)}><BsFillTrashFill /></button></td>

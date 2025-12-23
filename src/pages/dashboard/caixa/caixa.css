@@ -177,3 +177,8 @@ label {
     /* Para alinhar totais */
     text-align: right;
 }
+
+.item-carrinho {
+    display: flex;
+    justify-content: space-between;
+}

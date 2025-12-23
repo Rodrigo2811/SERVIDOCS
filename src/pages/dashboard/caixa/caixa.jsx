@@ -12,7 +12,12 @@ const LOCAL_STORAGE_ESTOQUE = 'produtosEstoque';
 const LOCAL_STORAGE_CLIENTE = 'clientesCadastrados'
 
 const Caixa = () => {
-
+    const [cliente] = useState(() => {
+        const storedClientes = localStorage.getItem(LOCAL_STORAGE_CLIENTE);
+        return storedClientes ? JSON.parse(storedClientes) : []
+    })
+    const [desconto, setDesconto] = useState(0)
+    const [carrinho, setCarrinho] = useState([])
     const [searchTem, setSearchTerm] = useState('')
     const [foundProducts, setFoudProducts] = useState([])
 
@@ -40,6 +45,22 @@ const Caixa = () => {
         }
     }
 
+    const addCarrinho = (produto) => {
+        setCarrinho((itensAtuais) => {
+            const itemExistente = itensAtuais.find(item => item.id === produto.id)
+
+            if (itemExistente) {
+                return itemExistente.map(item =>
+                    item.id === produto.id
+                        ? { ...item, quatidade: item.quatidade + 1 }
+                        : item
+                );
+            }
+            return [...itensAtuais, { ...produto, quantidade: 1 }];
+        })
+        setSearchTerm('');
+        setFoudProducts([])
+    }
 
 
     function finalizarVenda(e) {
@@ -47,6 +68,9 @@ const Caixa = () => {
 
         alert('Venda Finalizada')
     }
+
+
+    const subTotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
     return (
         <DashboardLayout>
 
@@ -66,7 +90,7 @@ const Caixa = () => {
                     {foundProducts.length > 0 && (
                         <div className="results-dropdown">
                             {foundProducts.map(product => (
-                                <div key={product.id} className="result-item">
+                                <div key={product.id} className="result-item" onClick={() => addCarrinho(product)} styele={{ cursor: 'pointer' }}>
                                     <span>{product.nome}</span>
                                     <span className="product-price">{parseFloat(product.preco).toFixed(2)}</span>
                                     <BsCCircle />
@@ -80,16 +104,29 @@ const Caixa = () => {
                 <div className="container-carrinho">
                     <h3>Resumo da Venda</h3>
 
+                    <div className="lsita-itens-carrinho">
+                        {carrinho.map((item) => (
+                            <div key={item.id} className="item-carrinho">
+                                <span>{item.nome} (x{item.quantidade})</span>
+                                <span>{"R$ " + (item.preco * item.quantidade).toFixed(2)}</span>
+
+                            </div>
+                        ))}
+                    </div>
+
                     <label >Selecione um Cliente(Opcional)</label>
                     <select>
                         <option value="Selecione um cliente">Selecione um Cliente</option>
                         {
-
+                            cliente.map((element, index) => {
+                                return <option key={index} value={element.nome}>{element.nome}</option>
+                            })
                         }
                     </select>
 
                     <label>Forma de Pagamento</label>
-                    <select name="" id="">
+                    <select name="forma_pagamento" id="forma_pagamento" >
+                        <option value=""></option>
                         <option value="Dinheiro">Dinheiro</option>
                         <option value="Débito">Débito</option>
                         <option value="Crédito">Crédito</option>
@@ -97,10 +134,10 @@ const Caixa = () => {
                     </select>
 
                     <label >Desconto(R$)</label>
-                    <input type="number" className="inpDesconto" placeholder="0,00" />
+                    <input type="number" className="inpDesconto" placeholder="0,00" onChange={(e) => setDesconto(e.target.value)} />
                     <hr />
-                    <span className="subtotal">Subtotal <span>0</span></span>
-                    <span className="total">Total: <span className="rsTOtal">0.00</span></span>
+                    <span className="subtotal">Subtotal <span>{subTotal.toFixed(2)}</span></span>
+                    <span className="total">Total: <span className="rsTOtal">R$ {subTotal - desconto} </span></span>
 
                     <button className="btn-finalizarVenda" onClick={finalizarVenda}><BsCurrencyDollar />Finalizar Venda</button>
                 </div>
