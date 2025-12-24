@@ -106,8 +106,8 @@ const Clientes = () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Nome</th>
-                                    <th>CPF</th>
+                                    <th>Nome/Razão Social</th>
+                                    <th>CPF/CNPJ</th>
                                     <th>Email</th>
                                     <th>Telefone</th>
                                     <th>Ações</th>
@@ -142,9 +142,9 @@ const Clientes = () => {
                         </header>
                         <form onSubmit={salvarCliente}>
 
-                            <label >Novo Completo</label><br />
+                            <label >Novo / Ração Social</label><br />
                             <input type="text" name="nome" placeholder="Novo Completo" value={cliente.nome} onChange={handleChange} />
-                            <label >CPF</label>
+                            <label >CPF / CNPJ</label>
                             <input type="text" name="cpf" placeholder="CPF" onChange={handleChange} value={cliente.cpf} />
                             <label >Telefone</label><br /><br />
                             <input type="Preço" name="telefone" placeholder="Telefone" onChange={handleChange} value={cliente.telefone} />

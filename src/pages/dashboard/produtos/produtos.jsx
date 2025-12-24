@@ -37,11 +37,10 @@ const Produtos = () => {
     function handleChange(e) {
         const { name, value } = e.target;
 
-        // Se o campo for 'preco' ou 'estoque', tente converter para número, senão, mantenha a string.
-        const updatedValue = (name === 'preco' || name === 'estoque') ? Number(value) : value;
+
 
         setProduto(prevProduto => ({
-            ...prevProduto, [name]: updatedValue
+            ...prevProduto, [name]: value
         }))
     }
 
@@ -70,7 +69,11 @@ const Produtos = () => {
         }
 
 
-        const novoProduto = { ...produto, id: Date.now() };
+        const novoProduto = {
+            ...produto, id: Date.now(),
+            preco: Number(produto.preco),
+            estoque: Number(produto.estoque)
+        };
 
 
         setProdutos(prevProdutos => [...prevProdutos, novoProduto])
@@ -116,7 +119,7 @@ const Produtos = () => {
 
                 <header className="header-produtos">
                     <div>
-                        <h1>Produtos</h1>
+                        <h1>Produtos / Serviços</h1>
                         <p>Gerencie seu estoque e preços</p>
 
                     </div>

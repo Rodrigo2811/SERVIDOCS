@@ -65,6 +65,21 @@
     font-size: 18px;
     border-radius: 4px;
     border: none;
+    padding: 5px;
+}
+
+.footer-carrinho .btn-cancelarCarrinho {
+    height: 40px;
+    color: var(--accent-foreGround);
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    border-radius: 4px;
+    border: none;
+    padding: 5px;
+    gap: 5px;
 }
 
 .subtotal {
@@ -181,4 +196,11 @@ label {
 .item-carrinho {
     display: flex;
     justify-content: space-between;
+}
+
+.footer-carrinho {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+
 }

@@ -1,11 +1,9 @@
+import { useState } from "react";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
-
-import { BsCCircle, BsCurrencyDollar } from 'react-icons/bs'
+import { BsCCircle, BsCurrencyDollar, BsXCircle } from 'react-icons/bs'
 
 import './caixa.css'
-
-import { useState } from "react";
 
 
 const LOCAL_STORAGE_ESTOQUE = 'produtosEstoque';
@@ -137,9 +135,13 @@ const Caixa = () => {
                     <input type="number" className="inpDesconto" placeholder="0,00" onChange={(e) => setDesconto(e.target.value)} />
                     <hr />
                     <span className="subtotal">Subtotal <span>{subTotal.toFixed(2)}</span></span>
-                    <span className="total">Total: <span className="rsTOtal">R$ {subTotal - desconto} </span></span>
+                    <span className="total">Total: <span className="rsTOtal">R$ {(subTotal - desconto).toFixed(2)} </span></span>
 
-                    <button className="btn-finalizarVenda" onClick={finalizarVenda}><BsCurrencyDollar />Finalizar Venda</button>
+                    <div className="footer-carrinho">
+
+                        <button className="btn-cancelarCarrinho" onClick={''}><BsXCircle />Cancelar Venda</button>
+                        <button className="btn-finalizarVenda" onClick={finalizarVenda}><BsCurrencyDollar />Finalizar Venda</button>
+                    </div>
                 </div>
             </div>
         </DashboardLayout>
