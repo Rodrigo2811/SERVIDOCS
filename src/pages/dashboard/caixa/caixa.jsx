@@ -8,12 +8,19 @@ import './caixa.css'
 
 const LOCAL_STORAGE_ESTOQUE = 'produtosEstoque';
 const LOCAL_STORAGE_CLIENTE = 'clientesCadastrados'
-
+const LOCAL_STORAGE_VENDAS = 'tbVendas';
 const Caixa = () => {
+
+    const [vendas, setVendas] = useState(() => {
+        const storedVendas = localStorage.getItem(LOCAL_STORAGE_VENDAS);
+        return storedVendas ? JSON.parse(storedVendas) : []
+    })
     const [cliente] = useState(() => {
         const storedClientes = localStorage.getItem(LOCAL_STORAGE_CLIENTE);
         return storedClientes ? JSON.parse(storedClientes) : []
     })
+    const [clienteSelecionado, SetClienteSelecionado] = useState('')
+    const [formaPagamento, setFormaPagamento] = useState('')
     const [desconto, setDesconto] = useState(0)
     const [carrinho, setCarrinho] = useState([])
     const [searchTem, setSearchTerm] = useState('')
@@ -64,11 +71,46 @@ const Caixa = () => {
     function finalizarVenda(e) {
         e.preventDefault()
 
-        alert('Venda Finalizada')
+        if (carrinho.length === 0) {
+            alert('O carrinho está vazio');
+            return;
+        }
+
+        const novaVenda = {
+            id: Date.now,
+            data: new Date().toLocaleString(),
+            cliente: clienteSelecionado || "Consumidor final",
+            itens: carrinho,
+            subTotal: subTotal,
+            desconto: desconto,
+            total: valorTotal,
+            formaPagamento: formaPagamento
+        }
+
+        const vendasAtualizadas = [...vendas, novaVenda];
+        setVendas(vendasAtualizadas)
+
+        localStorage.setItem(LOCAL_STORAGE_VENDAS, JSON.stringify(vendasAtualizadas))
+
+        setCarrinho([])
+        setDesconto(0)
+        SetClienteSelecionado("")
+        setFormaPagamento("")
+
+        alert('Venda Finalizada com sucesso!')
+    }
+
+    const cancelarVenda = () => {
+        if (window.confirm("Deseja cancelar a venda?")) {
+            setCarrinho([])
+            setDesconto(0)
+        }
     }
 
 
     const subTotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
+    const valorTotal = subTotal - desconto
+
     return (
         <DashboardLayout>
 
@@ -113,7 +155,7 @@ const Caixa = () => {
                     </div>
 
                     <label >Selecione um Cliente(Opcional)</label>
-                    <select>
+                    <select onChange={(e) => SetClienteSelecionado(e.target.value)}>
                         <option value="Selecione um cliente">Selecione um Cliente</option>
                         {
                             cliente.map((element, index) => {
@@ -123,7 +165,7 @@ const Caixa = () => {
                     </select>
 
                     <label>Forma de Pagamento</label>
-                    <select name="forma_pagamento" id="forma_pagamento" >
+                    <select name="forma_pagamento" id="forma_pagamento" value={formaPagamento} onChange={(e) => setFormaPagamento(e.target.value)} >
                         <option value=""></option>
                         <option value="Dinheiro">Dinheiro</option>
                         <option value="Débito">Débito</option>
@@ -135,11 +177,11 @@ const Caixa = () => {
                     <input type="number" className="inpDesconto" placeholder="0,00" onChange={(e) => setDesconto(e.target.value)} />
                     <hr />
                     <span className="subtotal">Subtotal <span>{subTotal.toFixed(2)}</span></span>
-                    <span className="total">Total: <span className="rsTOtal">R$ {(subTotal - desconto).toFixed(2)} </span></span>
+                    <span className="total">Total: <span className="rsTOtal">R$ {(valorTotal).toFixed(2)} </span></span>
 
                     <div className="footer-carrinho">
 
-                        <button className="btn-cancelarCarrinho" onClick={''}><BsXCircle />Cancelar Venda</button>
+                        <button className="btn-cancelarCarrinho" onClick={cancelarVenda}><BsXCircle />Cancelar Venda</button>
                         <button className="btn-finalizarVenda" onClick={finalizarVenda}><BsCurrencyDollar />Finalizar Venda</button>
                     </div>
                 </div>

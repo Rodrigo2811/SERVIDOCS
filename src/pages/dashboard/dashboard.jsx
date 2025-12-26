@@ -11,6 +11,7 @@ import './dashboard.css'
 const LOCAL_STORAGE_PRODUTOS = 'produtosEstoque';
 const LOCAL_STORAGE_CLIENTES = 'clientesCadastrados'
 const LOCAL_STORAGE_DESPESAS = 'despesasCadastradas'
+const LOCAL_STORAGE_VENDAS = 'tbVendas'
 
 const Dashboard = () => {
 
@@ -31,10 +32,18 @@ const Dashboard = () => {
 
     })
 
+    const [vendas] = useState(() => {
+        const storedVendas = localStorage.getItem(LOCAL_STORAGE_VENDAS);
+        return storedVendas ? JSON.parse(storedVendas) : []
+    })
+
 
     const totalClientes = clientes.length
     const totalProdutos = produtos.length;
     const totalDespesas = despesas.length
+    const totalVendas = vendas.length
+    const receitaTotal = vendas.reduce((acc, venda) => acc + Number(venda.total || 0), 0)
+
 
     return (
         <>
@@ -68,7 +77,7 @@ const Dashboard = () => {
 
                         title='Total de Vendas'
                         icon={<BsCart3 />}
-                        qtd={0}
+                        qtd={totalVendas}
                         description='Vendas realizadas  '
                     />
                     <Card
@@ -82,7 +91,7 @@ const Dashboard = () => {
 
                         title='Receita Total'
                         icon={<BsCurrencyDollar />}
-                        qtd={Number(0).toFixed(2)}
+                        qtd={"R$" + receitaTotal.toFixed(2)}
                         description='Valor total em vendas'
                     />
 

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Card from "../../../components/card/card";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
@@ -6,7 +8,31 @@ import { BsCurrencyDollar, BsGraphUpArrow, BsFillCalendar2Fill, BsBag } from "re
 
 import './relatorio.css'
 
+
+const LOCAL_STORAGE_VENDAS = 'tbVendas';
+
 const Relatorios = () => {
+
+
+    const [vendas] = useState(() => {
+        const storedVendas = localStorage.getItem(LOCAL_STORAGE_VENDAS);
+        return storedVendas ? JSON.parse(storedVendas) : []
+    })
+
+    const totaisPorMetodo = vendas.reduce((acc, venda) => {
+        const metodo = venda.formaPagamento;
+        const valor = Number(venda.total || 0);
+
+        if (!acc[metodo]) {
+            acc[metodo] = 0
+        }
+        acc[metodo] += valor;
+        return acc;
+    }, {})
+
+
+    const totalVendas = vendas.length
+    const receitaTotal = vendas.reduce((acc, venda) => acc + Number(venda.total || 0), 0)
 
     return (
         <>
@@ -26,14 +52,14 @@ const Relatorios = () => {
                     <Card
                         title='Receita Total'
                         icon={<BsCurrencyDollar />}
-                        qtd={Number(0).toFixed(2)}
+                        qtd={"R$" + receitaTotal.toFixed(2)}
                         description={'0 vendas realizadas'}
                     />
 
                     <Card
                         title='Total de Vendas'
                         icon={<BsBag />}
-                        qtd={0}
+                        qtd={totalVendas}
                         description='Tranzações concluidas'
                     />
 
@@ -47,7 +73,7 @@ const Relatorios = () => {
                     <Card
                         title='Ticket Médio'
                         icon={<BsFillCalendar2Fill />}
-                        qtd={Number(0).toFixed(2)}
+                        qtd={"R$" + (receitaTotal / totalVendas).toFixed(2)}
                         description='Valor médio por venda'
                     />
                 </div>
@@ -62,10 +88,10 @@ const Relatorios = () => {
                         <p>Distribuição dos métodos de pagamento</p>
 
                         <ul>
-                            <li>Dinheiro <span>0</span></li>
-                            <li>Crédito <span>0</span></li>
-                            <li>Débito <span>0</span></li>
-                            <li>Pix <span>0</span></li>
+                            <li>Dinheiro <span>R$ {(totaisPorMetodo['Dinheiro'] || 0).toFixed(2)}</span></li>
+                            <li>Crédito <span>R$ {(totaisPorMetodo['Crédito'] || 0).toFixed(2)}</span></li>
+                            <li>Débito <span>R$ {(totaisPorMetodo['Débito'] || 0).toFixed(2)}</span></li>
+                            <li>Pix <span>R$ {(totaisPorMetodo['Pix'] || 0).toFixed(2)}</span></li>
                         </ul>
                     </div>
                 </div>

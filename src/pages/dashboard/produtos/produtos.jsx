@@ -9,7 +9,9 @@ import { useState, useEffect } from "react";
 
 const LOCAL_STORAGE_KEY = 'produtosEstoque';
 
+
 const Produtos = () => {
+
 
     const [produtos, setProdutos] = useState(() => {
         const storedProducts = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -194,7 +196,7 @@ const Produtos = () => {
                         </header>
                         <form onSubmit={salvarProduto}>
 
-                            <label htmlFor="nome">Nome do Produto</label><br />
+
 
                             <input
                                 type="text"
@@ -206,52 +208,59 @@ const Produtos = () => {
                                 required
                             />
 
-                            <label htmlFor="categoria">Categoria</label>
-                            <input
-                                type="text"
-                                id="categoria"
-                                name="categoria"
-                                placeholder="Categoria"
-                                value={produto.categoria}
-                                onChange={handleChange}
-                                required
-                            />
+                            <div style={{ display: 'flex', margin: '5px 0', justifyContent: 'space-between', gap: '5px' }}>
 
-                            <label htmlFor="preco">Preço</label><br /><br />
-                            <input
-                                type="number"
-                                id="preco"
-                                name="preco"
-                                placeholder="Preço"
-                                value={produto.preco}
-                                onChange={handleChange}
-                                required
-                            />
+                                <input
+                                    type="text"
+                                    id="categoria"
+                                    name="categoria"
+                                    placeholder="Categoria"
+                                    value={produto.categoria}
+                                    onChange={handleChange}
+                                    required
+                                />
 
-                            <label htmlFor="estoque">Quantidade em estoque</label><br />
-                            <input
-                                type="number"
-                                id="estoque"
-                                name="estoque"
-                                placeholder="Quantidade em estoque"
-                                value={produto.estoque}
-                                onChange={handleChange}
-                                required
-                            />
 
-                            <label htmlFor="status">Status</label><br />
+                                <input
+                                    type="number"
+                                    id="preco"
+                                    name="preco"
+                                    placeholder="Preço"
+                                    value={produto.preco}
+                                    onChange={handleChange}
+                                    required
+                                />
 
-                            <select
-                                id="status"
-                                name="status"
-                                value={produto.status}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">Selecione o Status</option>
-                                <option value="Disponivel">Disponível</option>
-                                <option value="Indisponivel">Indisponível</option>
-                            </select>
+                            </div>
+                            <div style={{ display: 'flex', margin: '5px 0', justifyContent: 'space-between', gap: '5px' }}>
+
+
+                                <input
+                                    type="number"
+                                    id="estoque"
+                                    name="estoque"
+                                    placeholder="Quantidade em estoque"
+                                    value={produto.estoque}
+                                    onChange={handleChange}
+                                    required
+                                />
+
+
+
+                                <select
+                                    id="status"
+                                    name="status"
+                                    value={produto.status}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="">Selecione o Status</option>
+                                    <option value="Disponivel">Disponível</option>
+                                    <option value="Indisponivel">Indisponível</option>
+                                </select>
+
+                            </div>
+
 
                             <label htmlFor="descricao">Descrição</label><br />
                             <input
