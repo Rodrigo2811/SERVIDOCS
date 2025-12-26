@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout"
 import Card from "../../../components/card/card"
 
-import { BsPlus, BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs'
+import { BsPlus, BsFillPencilFill, BsFillTrashFill, BsCurrencyDollar } from 'react-icons/bs'
 
 import { FormData } from "../../../components/util/util"
 
@@ -110,7 +110,7 @@ const Despesas = () => {
                     <Card
 
                         title='Total Despesas'
-                        icon={''}
+                        icon={<BsCurrencyDollar />}
                         qtd={'R$ ' + (totalDespesas).toFixed(2)}
                         description='Produtos cadastrados'
                     />

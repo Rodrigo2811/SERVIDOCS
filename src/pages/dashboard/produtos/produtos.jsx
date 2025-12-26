@@ -1,7 +1,7 @@
 import Card from "../../../components/card/card";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
-import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
+import { BsBoxSeam, BsCurrencyDollar, BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import './produtos.css'
 import { useState, useEffect } from "react";
@@ -135,6 +135,7 @@ const Produtos = () => {
                     <Card
                         title={'Total de Produtos'}
                         qtd={totalProdutos}
+                        icon={<BsBoxSeam />}
                     />
                     <Card
                         title={'Estoque Total'}
@@ -143,6 +144,7 @@ const Produtos = () => {
                     <Card
                         title={'Valor em Estoque'}
                         qtd={'R$ ' + valorTotalEstoque.toFixed(2).replace('.', ',')}
+                        icon={<BsCurrencyDollar />}
                     />
                 </div>
 

@@ -81,19 +81,19 @@ const Registrar = () => {
                 <small  >Preencha os dados para criar sua conta</small>
 
                 <form className='form-registro' onSubmit={salvarUser}>
-                    <label htmlFor="">Nome Completo</label>
+                    <label htmlFor="nome_completo">Nome Completo</label>
                     <input type="text" id='nome_completo' name="nome_completo" value={usuario.nome_completo} onChange={handleChange} />
-                    <label htmlFor="">Email</label>
+                    <label htmlFor="email">Email</label>
                     <input type="email" id='email' name="email" value={usuario.email} onChange={handleChange} />
-                    <label htmlFor="">Tipo de usuário</label>
+                    <label htmlFor="tipo_usuario">Tipo de usuário</label>
                     <select name="tipo_usuario" id='tipo_usuario' value={usuario.tipo_usuario} onChange={handleChange}>
-                        <option value=""></option>
+                        <option value="">Selecione um tipo</option>
                         <option value="Operador">Operador</option>
                         <option value="Administrador">Administrador</option>
                     </select>
-                    <label htmlFor="">Senha</label>
+                    <label htmlFor="password">Senha</label>
                     <input type="password" id='password' name='password' value={usuario.password} onChange={handleChange} />
-                    <label htmlFor="">Confirme a senha</label>
+                    <label htmlFor="conf_senha">Confirme a senha</label>
                     <input type="password" id='conf_senha' name='conf_senha' value={usuario.conf_senha} onChange={handleChange} />
 
                     <button type='submit'>Registrar</button>

@@ -81,7 +81,35 @@ const Relatorios = () => {
                 <div className="container">
                     <div className="container-hisotricoVendas">
                         <h3>Histórico de Vendas</h3>
-                        <p>Lista completa de todas as vendas realizadas</p>
+                        <p>Lista das 5 ultimas vendas realizadas</p>
+
+                        {vendas.length <= 0 ? (
+                            <h4>Sem vendas realizadas</h4>
+                        ) : (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nome/Razão Social</th>
+                                        <th>Data</th>
+                                        <th>Valor</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+                                    {vendas.map((v, index) => (
+                                        <tr key={index}>
+                                            <td>{v.cliente}</td>
+                                            <td>{v.data}</td>
+                                            <td>{"R$ " + v.total.toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+
+
                     </div>
                     <div className="container-formaDePagamento">
                         <h3>Formas de Pagamento</h3>
