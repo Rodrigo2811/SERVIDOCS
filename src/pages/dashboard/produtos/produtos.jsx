@@ -6,12 +6,9 @@ import { BsBoxSeam, BsCurrencyDollar, BsFillPencilFill, BsFillTrashFill, BsPlus 
 import './produtos.css'
 import { useState, useEffect } from "react";
 
-
 const LOCAL_STORAGE_KEY = 'produtosEstoque';
 
-
 const Produtos = () => {
-
 
     const [produtos, setProdutos] = useState(() => {
         const storedProducts = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -21,7 +18,6 @@ const Produtos = () => {
 
     const [modalOpen, setModalOpen] = useState(false)
     const [produto, setProduto] = useState({
-
         id: null,
         nome: '',
         categoria: '',
@@ -31,7 +27,6 @@ const Produtos = () => {
         descricao: ''
     })
 
-
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(produtos));
     }, [produtos]);
@@ -39,15 +34,12 @@ const Produtos = () => {
     function handleChange(e) {
         const { name, value } = e.target;
 
-
-
         setProduto(prevProduto => ({
             ...prevProduto, [name]: value
         }))
     }
 
     function addProduto() {
-
         setProduto({
             id: null,
             nome: '',
@@ -59,7 +51,6 @@ const Produtos = () => {
         })
         setModalOpen(false)
         alert('Produto cadastrado com sucesso!')
-
     }
 
     function salvarProduto(e) {
@@ -70,21 +61,17 @@ const Produtos = () => {
             return;
         }
 
-
         const novoProduto = {
             ...produto, id: Date.now(),
             preco: Number(produto.preco),
             estoque: Number(produto.estoque)
         };
 
-
         setProdutos(prevProdutos => [...prevProdutos, novoProduto])
-
         addProduto()
     }
 
     function handleAddProdutoServico() {
-
         setProduto({
             id: null,
             nome: '',
@@ -101,21 +88,16 @@ const Produtos = () => {
         alert('editar' + id)
     }
 
-
     function removerProduto(id) {
-
         setProdutos(prevProdutos => prevProdutos.filter(p => p.id !== id));
         alert('Produto removido.');
     }
-
-
 
     const totalProdutos = produtos.length;
     const estoqueTotal = produtos.reduce((acc, p) => acc + (Number(p.estoque) || 0), 0);
     const valorTotalEstoque = produtos.reduce((acc, p) => acc + (Number(p.preco) * Number(p.estoque) || 0), 0);
 
     return (
-
         <>
             <DashboardLayout>
 
@@ -148,8 +130,7 @@ const Produtos = () => {
                     />
                 </div>
 
-
-                <div className="container-usuarios" >
+                <div className="container-produtos" >
                     <h3>Lista de Produtos</h3>
 
                     {produtos.length === 0 ? (
@@ -165,11 +146,9 @@ const Produtos = () => {
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
-
                             </thead>
 
                             <tbody>
-
                                 {produtos.map(p => (
                                     <tr key={p.id}>
                                         <td>{p.nome}</td>
@@ -178,7 +157,6 @@ const Produtos = () => {
                                         <td>{p.estoque}</td>
                                         <td>{p.status}</td>
                                         <td>
-
                                             <button className="btn-acao" onClick={() => editar(Produtos.id)}><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerProduto(p.id)}><BsFillTrashFill /></button>
                                         </td>
@@ -187,18 +165,14 @@ const Produtos = () => {
                             </tbody>
                         </table>
                     )}
-
                 </div>
                 {modalOpen && (
-
                     <div className="modal-addProdutos" >
                         <header>
                             <h3>Novo Produto</h3>
                             <p>Preencha os dados para cadastrar um novo produto</p>
                         </header>
                         <form onSubmit={salvarProduto}>
-
-
 
                             <input
                                 type="text"
@@ -211,7 +185,6 @@ const Produtos = () => {
                             />
 
                             <div style={{ display: 'flex', margin: '5px 0', justifyContent: 'space-between', gap: '5px' }}>
-
                                 <input
                                     type="text"
                                     id="categoria"
@@ -221,7 +194,6 @@ const Produtos = () => {
                                     onChange={handleChange}
                                     required
                                 />
-
 
                                 <input
                                     type="number"
@@ -236,7 +208,6 @@ const Produtos = () => {
                             </div>
                             <div style={{ display: 'flex', margin: '5px 0', justifyContent: 'space-between', gap: '5px' }}>
 
-
                                 <input
                                     type="number"
                                     id="estoque"
@@ -246,8 +217,6 @@ const Produtos = () => {
                                     onChange={handleChange}
                                     required
                                 />
-
-
 
                                 <select
                                     id="status"
@@ -262,7 +231,6 @@ const Produtos = () => {
                                 </select>
 
                             </div>
-
 
                             <label htmlFor="descricao">Descrição</label><br />
                             <input

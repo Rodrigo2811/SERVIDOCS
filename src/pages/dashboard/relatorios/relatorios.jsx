@@ -36,10 +36,7 @@ const Relatorios = () => {
 
     return (
         <>
-
             <DashboardLayout>
-
-
 
                 <header>
                     <h1>Relatórios</h1>
@@ -47,8 +44,6 @@ const Relatorios = () => {
                 </header>
 
                 <div className="navCard">
-
-
                     <Card
                         title='Receita Total'
                         icon={<BsCurrencyDollar />}
@@ -92,9 +87,7 @@ const Relatorios = () => {
                                         <th>Nome/Razão Social</th>
                                         <th>Data</th>
                                         <th>Valor</th>
-
                                     </tr>
-
                                 </thead>
 
                                 <tbody>
@@ -108,7 +101,6 @@ const Relatorios = () => {
                                 </tbody>
                             </table>
                         )}
-
 
                     </div>
                     <div className="container-formaDePagamento">
@@ -124,7 +116,6 @@ const Relatorios = () => {
                     </div>
                 </div>
             </DashboardLayout>
-
         </>
     )
 }

@@ -91,3 +91,19 @@
     border-radius: 4px;
     border: none;
 }
+
+.container-produtos {
+    width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 5px;
+    background-color: var(--base);
+    box-shadow: 0 0 4px 0px var(--foreGround);
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 600px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
