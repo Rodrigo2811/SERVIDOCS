@@ -6,6 +6,8 @@ import Card from "../../../components/card/card";
 
 import { BsPerson, BsFillShieldLockFill } from 'react-icons/bs'
 
+
+
 import './usuarios.css'
 
 const LOCAL_STORAGE_KEY = 'userCadastrados'

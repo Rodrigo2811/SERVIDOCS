@@ -1,7 +1,9 @@
 import { useState } from 'react';
-
 import { Link } from 'react-router-dom';
+
+import Alert from '../components/alert/alert.jsx';
 import logo from '/src/images/indice.jpg';
+
 
 import './login.css'
 
@@ -10,13 +12,29 @@ const Login = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [alertOn, setAlertOn] = useState(false)
+    const [aletMensagem, setAlertMensagem] = useState('')
+    const [alertType, setAlertType] = useState('')
 
+    function showAlert(mensagem, tipo) {
+        setAlertMensagem(mensagem)
+        setAlertType(tipo)
+
+        setAlertOn(true)
+
+        setTimeout(() => {
+            setAlertOn(false)
+        }, 4000);
+
+    }
 
     function logar(e) {
         e.preventDefault();
 
+        setAlertOn(false)
+
         if (email === "" && password === "") {
-            alert('Preencha os campos')
+            showAlert('Preencha os campos usuario e senha !', 'erro')
             return
         }
         const userSalvos = JSON.parse(localStorage.getItem('userCadastrados') || "[]");
@@ -25,10 +43,15 @@ const Login = () => {
 
         if (userEncontrato) {
             localStorage.setItem('logado', email)
-            alert(email + ' Logado com sucesso!')
-            window.location.href = '/Dashboard'
+            showAlert(email + ' Logado com sucesso !', 'sucesso')
+
+            setTimeout(() => {
+                window.location.href = '/Dashboard'
+            }, 3000)
+
         } else {
-            alert('Email ou senha incorretos')
+            showAlert('Email ou senha incorreto(s) !', 'erro')
+
         }
     }
 
@@ -36,7 +59,9 @@ const Login = () => {
 
     return (
         <>
+            {alertOn && <Alert mensagem={aletMensagem} tipo={alertType} />}
             <div className='container-login'>
+
                 <img className='logo' src={logo} alt="" />
 
                 <h2>Entrar no Sistema</h2>

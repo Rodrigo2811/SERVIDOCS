@@ -5,9 +5,17 @@ export const formataTel = (valor) => {
 }
 
 export const formataCPF = (valor) => {
-    const nCPF = valor.replace(/\D/g, '');
 
-    return nCPF.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
+    const limpo = valor.replace(/\D/g, '')
+
+
+    if (valor.length <= 11) {
+        return limpo.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
+    } else {
+        return limpo.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
+
+    }
+
 }
 
 export const dataRegistro = () => {

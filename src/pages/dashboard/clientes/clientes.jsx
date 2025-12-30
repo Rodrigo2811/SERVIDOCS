@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 
-import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
-
 import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
-import './clientes.css'
+import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
+
 import { formataTel, formataCPF } from "../../../components/util/util";
+
+import './clientes.css'
 
 const LOCAL_STORAGE_KEY = 'clientesCadastrados'
 
@@ -15,7 +16,6 @@ const Clientes = () => {
         const storedClientes = localStorage.getItem(LOCAL_STORAGE_KEY)
         return storedClientes ? JSON.parse(storedClientes) : []
     })
-
 
     const [cliente, setCliente] = useState({
         id: null,

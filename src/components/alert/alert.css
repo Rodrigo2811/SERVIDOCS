@@ -1,0 +1,42 @@
+.container-alert {
+    top: 50px;
+    left: 50%;
+    min-width: 200px;
+    max-width: 400px;
+    padding: 5px;
+    height: 60px;
+    z-index: 2;
+    border-radius: 4px;
+    box-shadow: 0px 0px 2px 1px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    transform: translate(-50%, 0px);
+    animation-name: animaAlert;
+    animation-duration: .5s;
+}
+
+@keyframes animaAlert {
+    from {
+        transform: translate(-50%, 0px);
+        top: 0px;
+
+    }
+
+    to {
+        transform: translate(-50%, 50px);
+        top: 0px;
+    }
+}
+
+
+.sucesso {
+    background-color: rgb(19, 182, 19);
+    color: white;
+}
+
+.erro {
+    background-color: rgb(243, 55, 55);
+    color: white;
+}
