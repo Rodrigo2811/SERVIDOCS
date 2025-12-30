@@ -34,7 +34,7 @@ const Login = () => {
         setAlertOn(false)
 
         if (email === "" && password === "") {
-            showAlert('Preencha os campos usuario e senha !', 'erro')
+            showAlert('Preencha os campos usuário e senha !', 'erro')
             return
         }
         const userSalvos = JSON.parse(localStorage.getItem('userCadastrados') || "[]");

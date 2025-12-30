@@ -1,6 +1,7 @@
 import img404 from '../../images/404.png'
 
 import './page404.css'
+
 const Page404 = () => {
 
     function handleVoltar() {

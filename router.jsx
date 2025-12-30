@@ -12,6 +12,8 @@ import Relatorios from './src/pages/dashboard/relatorios/relatorios';
 import Usuarios from './src/pages/dashboard/usuarios/usuarios';
 import Despesas from './src/pages/dashboard/despesas/despesas';
 
+import Page404 from './src/pages/notFound/page404';
+
 const Rotas = () => {
     return (
         <BrowserRouter>
@@ -27,6 +29,8 @@ const Rotas = () => {
                     <Route path='/Despesas' element={<PrivateRoute><Despesas /></PrivateRoute>} />
                     <Route path='/Relatorios' element={<PrivateRoute><Relatorios /></PrivateRoute>} />
                     < Route path='/usuarios' element={<PrivateRoute>< Usuarios /></PrivateRoute >} />
+
+                    <Route path='*' element={<Page404 />} />
 
                 </Routes >
 

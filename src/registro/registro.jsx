@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import logo from '/src/images/indice.jpg';
 import Alert from '../components/alert/alert';
-import { dataRegistro } from '../components/util/util';
+
 
 import './registro.css';
 
@@ -71,14 +71,14 @@ const Registrar = () => {
         e.preventDefault();
 
         if (!usuario.nome_completo || !usuario.email || !usuario.tipo_usuario || !usuario.password || !usuario.conf_senha) {
-            showAlert('Por favor, preencha todos os campos obrigatorios', 'erro')
+            showAlert('Por favor, preencha todos os campos obrigatorios!', 'erro')
             setAlertOn(true)
 
             return;
         }
 
         if (usuario.password !== usuario.conf_senha) {
-            showAlert('Campo confirme senha diferente de senha', 'erro')
+            showAlert('Campo confirme senha diferente de senha.', 'erro')
             setAlertOn(true)
             return;
         }
@@ -86,7 +86,7 @@ const Registrar = () => {
         const novoUsuario = { ...usuario, id: Date.now() };
 
         setUsers(prevUsers => [...prevUsers, novoUsuario])
-        showAlert('Registrado com sucesso', 'sucesso')
+        showAlert('Registrado com sucesso !', 'sucesso')
         addUser()
     }
     return (

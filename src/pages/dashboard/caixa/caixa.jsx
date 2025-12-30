@@ -22,6 +22,7 @@ const Caixa = () => {
     const [clienteSelecionado, SetClienteSelecionado] = useState('')
     const [formaPagamento, setFormaPagamento] = useState('')
     const [desconto, setDesconto] = useState(0)
+    const [valorRecebido, setValorRecebido] = useState(0)
     const [carrinho, setCarrinho] = useState([])
     const [searchTem, setSearchTerm] = useState('')
     const [foundProducts, setFoudProducts] = useState([])
@@ -55,9 +56,9 @@ const Caixa = () => {
             const itemExistente = itensAtuais.find(item => item.id === produto.id)
 
             if (itemExistente) {
-                return itemExistente.map(item =>
+                return itensAtuais.map(item =>
                     item.id === produto.id
-                        ? { ...item, quatidade: item.quatidade + 1 }
+                        ? { ...item, quantidade: item.quantidade + 1 }
                         : item
                 );
             }
@@ -74,6 +75,11 @@ const Caixa = () => {
         if (carrinho.length === 0) {
             alert('O carrinho está vazio');
             return;
+        }
+
+        if (formaPagamento === "") {
+            alert('Escolha uma forma de pagamento')
+            return
         }
 
         const novaVenda = {
@@ -96,6 +102,7 @@ const Caixa = () => {
         setDesconto(0)
         SetClienteSelecionado("")
         setFormaPagamento("")
+        setValorRecebido(0)
 
         alert('Venda Finalizada com sucesso!')
     }
@@ -104,12 +111,28 @@ const Caixa = () => {
         if (window.confirm("Deseja cancelar a venda?")) {
             setCarrinho([])
             setDesconto(0)
+            setValorRecebido(0)
         }
+    }
+
+    const alteraQuantidade = (id, prod) => {
+        setCarrinho((itensAtuais) => {
+            return itensAtuais.map(item => {
+                if (item.id === id) {
+                    const novaQuantidade = item.quantidade + prod;
+
+                    return { ...item, quantidade: novaQuantidade < 1 ? 1 : novaQuantidade }
+                }
+                return item
+            })
+        })
+
     }
 
 
     const subTotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
     const valorTotal = subTotal - desconto
+    const troco = (valorRecebido - valorTotal).toFixed(2)
 
     return (
         <DashboardLayout>
@@ -147,9 +170,13 @@ const Caixa = () => {
                     <div className="lsita-itens-carrinho">
                         {carrinho.map((item) => (
                             <div key={item.id} className="item-carrinho">
-                                <span>{item.nome} (x{item.quantidade})</span>
+                                <span>{item.nome} </span>
                                 <span>{"R$ " + (item.preco * item.quantidade).toFixed(2)}</span>
-
+                                <div style={{ display: 'flex', justifyContent: 'space-around', gap: '5px', alignItems: 'center' }}>
+                                    <button onClick={() => alteraQuantidade(item.id, 1)} style={{ padding: '5px', width: '35px', backgroundColor: 'green', border: 'none', color: 'white' }}>+</button>
+                                    <span>{item.quantidade}</span>
+                                    <button onClick={() => alteraQuantidade(item.id, -1)} style={{ padding: '5px', width: '35px', backgroundColor: 'red', border: 'none', color: 'white' }} > -</button>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -172,9 +199,24 @@ const Caixa = () => {
                         <option value="Crédito">Crédito</option>
                         <option value="Pix">Pix</option>
                     </select>
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                        <div>
+                            <label >Valor Recebido(R$)</label><br />
+                            <input type="number" className="impValorRecebido" placeholder="0,00" onChange={(e) => setValorRecebido(e.target.value).toFixed(2)} />
+                        </div>
 
-                    <label >Desconto(R$)</label>
-                    <input type="number" className="inpDesconto" placeholder="0,00" onChange={(e) => setDesconto(e.target.value)} />
+                        <div>
+                            <label >Desconto(R$)</label><br />
+                            <input type="number" className="impDesconto" placeholder="0,00" onChange={(e) => setDesconto(e.target.value)} />
+                        </div>
+
+                        <div>
+                            <label >Troco(R$)</label><br />
+                            <input type="number" className="impTroco" placeholder="0,00" value={troco} disabled />
+                        </div>
+
+
+                    </div>
                     <hr />
                     <span className="subtotal">Subtotal <span>{subTotal.toFixed(2)}</span></span>
                     <span className="total">Total: <span className="rsTOtal">R$ {(valorTotal).toFixed(2)} </span></span>
@@ -186,7 +228,7 @@ const Caixa = () => {
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </DashboardLayout >
     )
 }
 

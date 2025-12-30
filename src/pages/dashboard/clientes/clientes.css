@@ -1,5 +1,5 @@
 .container-clientes {
-    width: 1200px;
+    width: auto;
     display: flex;
     justify-content: space-between;
     flex-direction: column;

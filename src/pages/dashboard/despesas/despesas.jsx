@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout"
 import Card from "../../../components/card/card"
+import Alert from "../../../components/alert/alert"
 
 import { BsPlus, BsFillPencilFill, BsFillTrashFill, BsCurrencyDollar } from 'react-icons/bs'
 
@@ -12,15 +13,25 @@ import './despesas.css'
 const LOCAL_STORAGE_KEY = 'despesasCadastradas'
 const Despesas = () => {
 
-
+    const [alertOn, setAlertOn] = useState(false);
+    const [alertMensagem, setAlertMensagem] = useState('');
+    const [alertType, setAlertType] = useState('')
     const [modalOpen, setModalOpen] = useState(false);
-
     const [despesas, setDespesas] = useState(() => {
-
         const storedDespesas = localStorage.getItem(LOCAL_STORAGE_KEY)
         return storedDespesas ? JSON.parse(storedDespesas) : []
     })
 
+
+    function showAlert(mensagem, tipo) {
+        setAlertMensagem(mensagem)
+        setAlertType(tipo)
+        setAlertOn(true)
+
+        setTimeout(() => {
+            setAlertOn(false)
+        }, 3000)
+    }
     const [despesa, setDespesa] = useState({
         id: null,
         nome: '',
@@ -57,25 +68,29 @@ const Despesas = () => {
         e.preventDefault()
 
         if (!despesa.nome || !despesa.valor || !despesa.vencimento || !despesa.status) {
-            alert('Por favor, preencha todos os campos obrigatórios.')
+            showAlert('Por favor, preencha todos os campos obrigatórios.', 'erro')
             return;
         }
 
         const novaDespesa = { ...despesa, id: Date.now() }
 
         setDespesas(prevDespesas => [...prevDespesas, novaDespesa])
-
         addDespesa()
+        showAlert('Despesa cadastrada com sucesso !', 'sucesso')
+
+        setTimeout(() => {
+            setModalOpen(false)
+        }, 2000)
     }
 
     function editar(id) {
-        alert('editar' + id)
+        showAlert('editar: ' + id)
     }
 
 
     function removerDespesa(id) {
         setDespesas(prevDespesas => prevDespesas.filter(d => d.id !== id))
-        alert('Despesa removida com sucesso')
+        showAlert('Despesa removida com sucesso', 'sucesso')
     }
 
 
@@ -84,6 +99,7 @@ const Despesas = () => {
 
     return (
         <>
+            {alertOn && <Alert mensagem={alertMensagem} tipo={alertType} />}
             <DashboardLayout>
                 <header className="header-despesas">
 

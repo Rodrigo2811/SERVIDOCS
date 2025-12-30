@@ -1,22 +1,37 @@
+import { useState, useEffect } from "react";
+
 import Card from "../../../components/card/card";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
+import Alert from "../../../components/alert/alert";
 
 import { BsBoxSeam, BsCurrencyDollar, BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import './produtos.css'
-import { useState, useEffect } from "react";
 
 const LOCAL_STORAGE_KEY = 'produtosEstoque';
 
 const Produtos = () => {
 
+    const [modalOpen, setModalOpen] = useState(false)
+    const [alertOn, setAlertOn] = useState(false);
+    const [alertMensagem, setAlertMensagem] = useState('')
+    const [alertType, setAlertType] = useState('')
     const [produtos, setProdutos] = useState(() => {
         const storedProducts = localStorage.getItem(LOCAL_STORAGE_KEY);
 
         return storedProducts ? JSON.parse(storedProducts) : [];
     });
 
-    const [modalOpen, setModalOpen] = useState(false)
+    function showAlert(mensagem, tipo) {
+        setAlertMensagem(mensagem)
+        setAlertType(tipo)
+        setAlertOn(true)
+
+        setTimeout(() => {
+            setAlertOn(false)
+        }, 3000)
+    }
+
     const [produto, setProduto] = useState({
         id: null,
         nome: '',
@@ -50,14 +65,14 @@ const Produtos = () => {
             descricao: ''
         })
         setModalOpen(false)
-        alert('Produto cadastrado com sucesso!')
+        showAlert('Produto cadastrado com sucesso!', 'sucesso')
     }
 
     function salvarProduto(e) {
         e.preventDefault();
 
         if (!produto.nome || !produto.categoria || !produto.preco || !produto.estoque || !produto.status) {
-            alert('Por favor, preencha todos os campos obrigatórios (Nome, Categoria, Preço, Estoque, Status).');
+            showAlert('Por favor, preencha todos os campos obrigatórios (Nome, Categoria, Preço, Estoque, Status).', 'erro');
             return;
         }
 
@@ -85,12 +100,12 @@ const Produtos = () => {
     }
 
     function editar(id) {
-        alert('editar' + id)
+        showAlert('editar: ' + id)
     }
 
     function removerProduto(id) {
         setProdutos(prevProdutos => prevProdutos.filter(p => p.id !== id));
-        alert('Produto removido.');
+        showAlert('Produto removido.', 'sucesso');
     }
 
     const totalProdutos = produtos.length;
@@ -99,6 +114,7 @@ const Produtos = () => {
 
     return (
         <>
+            {alertOn && <Alert mensagem={alertMensagem} tipo={alertType} />}
             <DashboardLayout>
 
                 <header className="header-produtos">
@@ -157,7 +173,7 @@ const Produtos = () => {
                                         <td>{p.estoque}</td>
                                         <td>{p.status}</td>
                                         <td>
-                                            <button className="btn-acao" onClick={() => editar(Produtos.id)}><BsFillPencilFill /></button>
+                                            <button className="btn-acao" onClick={() => editar(p.id)}><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerProduto(p.id)}><BsFillTrashFill /></button>
                                         </td>
                                     </tr>

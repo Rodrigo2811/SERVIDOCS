@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-
 import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
+import Alert from "../../../components/alert/alert";
 
 import { formataTel, formataCPF } from "../../../components/util/util";
 
@@ -11,11 +11,23 @@ import './clientes.css'
 const LOCAL_STORAGE_KEY = 'clientesCadastrados'
 
 const Clientes = () => {
+    const [alertOn, setAlertOn] = useState(false)
+    const [alertMensagem, setAlertMensagem] = useState('')
+    const [alertType, setAlertType] = useState('')
     const [modalOpen, setModalClose] = useState(false);
     const [clientes, setClientes] = useState(() => {
         const storedClientes = localStorage.getItem(LOCAL_STORAGE_KEY)
         return storedClientes ? JSON.parse(storedClientes) : []
     })
+
+    function showAlert(mensagem, tipo) {
+        setAlertMensagem(mensagem)
+        setAlertType(tipo)
+        setAlertOn(true)
+        setTimeout(() => {
+            setAlertOn(false)
+        }, 3000)
+    }
 
     const [cliente, setCliente] = useState({
         id: null,
@@ -37,7 +49,6 @@ const Clientes = () => {
         setCliente(prevCliente => ({
             ...prevCliente, [name]: value
         }))
-
     }
 
 
@@ -57,31 +68,36 @@ const Clientes = () => {
         e.preventDefault();
 
         if (!cliente.nome || !cliente.cpf || !cliente.email || !cliente.telefone || !cliente.endereco) {
-            alert('Por favor, preencha todos os campos obrigatórios')
+            showAlert('Por favor, preencha todos os campos obrigatórios', 'erro')
             return;
         }
 
         const novoCliente = { ...cliente, id: Date.now() }
 
         setClientes(prevClientes => [...prevClientes, novoCliente])
-
         addCliente()
+        showAlert('Cliente adcionado com sucesso', 'sucesso')
+
+        setTimeout(() => {
+            setModalClose(false)
+        }, 2000)
     }
 
     function editar(id) {
-        alert('editar' + id)
+        showAlert('editar: ' + id)
     }
 
 
     function removerCliente(id) {
         setClientes(prevClientes => prevClientes.filter(c => c.id !== id))
-        alert('Cliente removido com sucesso')
+        showAlert('Cliente removido com sucesso', 'sucesso')
     }
 
     const totalClientes = clientes.length
 
     return (
         <>
+            {alertOn && <Alert mensagem={alertMensagem} tipo={alertType} />}
             <DashboardLayout>
                 <header className="header-clientes">
 

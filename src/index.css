@@ -26,6 +26,7 @@
 
 #root {
   display: flex;
+  background-color: var(--base);
 
 }
 
