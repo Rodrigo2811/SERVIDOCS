@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import logo from '/src/images/indice.jpg';
@@ -15,10 +15,10 @@ const Registrar = () => {
     const [alertOn, setAlertOn] = useState(false)
     const [aletMensagem, setAlertMensagem] = useState('')
     const [alertType, setAlertType] = useState('')
-    const [users, setUsers] = useState(() => {
-        const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY)
-        return storedUser ? JSON.parse(storedUser) : []
-    })
+    /*const [users, setUsers] = useState()  /* => {
+         const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY)
+         return storedUser ? JSON.parse(storedUser) : []
+     })*/
 
 
     function showAlert(mensagem, tipo) {
@@ -35,17 +35,17 @@ const Registrar = () => {
     const [usuario, setUsuario] = useState({
         id: Date.now,
         data: new Date().toLocaleString(),
-        nome_completo: '',
+        username: '',
         email: '',
         tipo_usuario: '',
-        password: '',
+        senha: '',
         conf_senha: ''
     })
 
 
-    useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users))
-    }, [users])
+    /* useEffect(() => {
+         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users))
+     }, [users])*/
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -58,36 +58,56 @@ const Registrar = () => {
         setUsuario({
             id: Date.now,
             data: new Date().toLocaleString(),
-            nome_completo: '',
+            username: '',
             email: '',
             tipo_usuario: '',
-            password: '',
+            senha: '',
             conf_senha: ''
 
         })
     }
 
-    function salvarUser(e) {
+    async function salvarUser(e) {
         e.preventDefault();
 
-        if (!usuario.nome_completo || !usuario.email || !usuario.tipo_usuario || !usuario.password || !usuario.conf_senha) {
+        if (!usuario.username || !usuario.email || !usuario.tipo_usuario || !usuario.senha || !usuario.conf_senha) {
             showAlert('Por favor, preencha todos os campos obrigatorios!', 'erro')
             setAlertOn(true)
 
             return;
         }
 
-        if (usuario.password !== usuario.conf_senha) {
+        if (usuario.senha !== usuario.conf_senha) {
             showAlert('Campo confirme senha diferente de senha.', 'erro')
             setAlertOn(true)
             return;
         }
 
-        const novoUsuario = { ...usuario, id: Date.now() };
+        try {
+            const response = await fetch('http://127.0.0.1:3003/registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: usuario.username,
+                    email: usuario.email,
+                    tipo_usuario: usuario.tipo_usuario,
+                    senha: usuario.senha
+                })
+            })
+            const dados = await response.json()
 
-        setUsers(prevUsers => [...prevUsers, novoUsuario])
-        showAlert('Registrado com sucesso !', 'sucesso')
-        addUser()
+            if (response.ok) {
+                showAlert('Registrado com sucesso', 'sucesso')
+                addUser()
+            } else {
+                showAlert(dados.mensagem || 'Erro ao registrar', 'erro')
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            showAlert('Erro de conexão com o servidor.', 'erro');
+        }
     }
     return (
         <>
@@ -102,7 +122,7 @@ const Registrar = () => {
 
                 <form className='form-registro' onSubmit={salvarUser}>
                     <label htmlFor="nome_completo">Nome Completo</label>
-                    <input type="text" id='nome_completo' name="nome_completo" value={usuario.nome_completo} onChange={handleChange} />
+                    <input type="text" id='nome_completo' name="username" value={usuario.username} onChange={handleChange} />
                     <label htmlFor="email">Email</label>
                     <input type="email" id='email' name="email" value={usuario.email} onChange={handleChange} />
                     <label htmlFor="tipo_usuario">Tipo de usuário</label>
@@ -112,7 +132,7 @@ const Registrar = () => {
                         <option value="Administrador">Administrador</option>
                     </select>
                     <label htmlFor="password">Senha</label>
-                    <input type="password" id='password' name='password' value={usuario.password} onChange={handleChange} />
+                    <input type="password" id='password' name='senha' value={usuario.senha} onChange={handleChange} />
                     <label htmlFor="conf_senha">Confirme a senha</label>
                     <input type="password" id='conf_senha' name='conf_senha' value={usuario.conf_senha} onChange={handleChange} />
 

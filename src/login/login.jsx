@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Alert from '../components/alert/alert.jsx';
 import logo from '/src/images/indice.jpg';
@@ -10,8 +10,10 @@ import './login.css'
 
 const Login = () => {
 
+    const navigate = useNavigate()
+
     const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [senha, setSenha] = useState('')
     const [alertOn, setAlertOn] = useState(false)
     const [aletMensagem, setAlertMensagem] = useState('')
     const [alertType, setAlertType] = useState('')
@@ -28,34 +30,62 @@ const Login = () => {
 
     }
 
-    function logar(e) {
+    async function logar(e) {
         e.preventDefault();
 
         setAlertOn(false)
 
-        if (email === "" && password === "") {
+        if (email === "" && senha === "") {
             showAlert('Preencha os campos usuário e senha !', 'erro')
             return
         }
-        const userSalvos = JSON.parse(localStorage.getItem('userCadastrados') || "[]");
 
-        const userEncontrato = userSalvos.find(user => user.email === email && user.password === String(password));
+        try {
+            const response = await fetch('http://127.0.0.1:3003/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    senha: senha
+                }),
+            });
+            const data = await response.json()
 
-        if (userEncontrato) {
-            localStorage.setItem('logado', email)
-            showAlert(email + ' Logado com sucesso !', 'sucesso')
+            if (response.ok) {
+                localStorage.setItem('logado', data.usuario.email)
+                showAlert(data.mensagem, 'sucesso');
 
-            setTimeout(() => {
-                window.location.href = '/Dashboard'
-            }, 3000)
-
-        } else {
-            showAlert('Email ou senha incorreto(s) !', 'erro')
-
+                setTimeout(() => {
+                    navigate('/Dashboard');
+                }, 2000)
+            } else {
+                showAlert(data.mensagem, 'erro')
+            }
+        } catch (error) {
+            showAlert('Erro ao conectar com o servidor!', 'erro');
+            console.error('Erro:', error)
         }
+
     }
 
-
+    /*const userSalvos = JSON.parse(localStorage.getItem('userCadastrados') || "[]");
+   
+           const userEncontrato = userSalvos.find(user => user.email === email && user.password === String(password));
+   
+           if (userEncontrato) {
+               localStorage.setItem('logado', email)
+               showAlert(email + ' Logado com sucesso !', 'sucesso')
+   
+               setTimeout(() => {
+                   window.location.href = '/Dashboard'
+               }, 3000)
+   
+           } else {
+               showAlert('Email ou senha incorreto(s) !', 'erro')
+   
+           }*/
 
     return (
         <>
@@ -72,7 +102,7 @@ const Login = () => {
                     <label >Email</label>
                     <input type="email" onChange={(e) => setEmail(e.target.value)} />
                     <label >Senha</label>
-                    <input type="password" onChange={(e) => setPassword(e.target.value)} />
+                    <input type="password" onChange={(e) => setSenha(e.target.value)} />
 
                     <button>Entrar</button>
                 </form>

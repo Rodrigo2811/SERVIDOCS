@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import logo from '/src/images/indice.jpg'
 
@@ -8,14 +8,18 @@ import './dashboardLayout.css'
 
 const DashboardLayout = ({ children }) => {
 
+    const navigate = useNavigate()
+
     function logout() {
+
+
         const deslogar = confirm('Deseja realmente sair do sistema?');
 
         if (!deslogar) {
             return false
         }
         localStorage.removeItem('logado')
-        window.location.href = '/'
+        navigate('/')
     }
 
     return (
