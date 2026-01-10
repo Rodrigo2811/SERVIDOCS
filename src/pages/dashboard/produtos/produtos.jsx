@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Card from "../../../components/card/card";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
@@ -8,7 +8,6 @@ import { BsBoxSeam, BsCurrencyDollar, BsFillPencilFill, BsFillTrashFill, BsPlus 
 
 import './produtos.css'
 
-const LOCAL_STORAGE_KEY = 'produtosEstoque';
 
 const Produtos = () => {
 
@@ -16,11 +15,7 @@ const Produtos = () => {
     const [alertOn, setAlertOn] = useState(false);
     const [alertMensagem, setAlertMensagem] = useState('')
     const [alertType, setAlertType] = useState('')
-    const [produtos, setProdutos] = useState(() => {
-        const storedProducts = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-        return storedProducts ? JSON.parse(storedProducts) : [];
-    });
+    const [produtos, setProdutos] = useState([])
 
     function showAlert(mensagem, tipo) {
         setAlertMensagem(mensagem)
@@ -32,19 +27,35 @@ const Produtos = () => {
         }, 3000)
     }
 
+    useEffect(() => {
+        const buscarProduto = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:3003/produtos')
+                const data = await response.json()
+
+                if (response.ok) {
+                    setProdutos(data)
+                } else {
+                    setProdutos([])
+                }
+            } catch (error) {
+                console.error('Erro ao buscar produtos', error)
+                showAlert('Erro ao carregar lista de produtos', 'erro')
+            }
+        }
+        buscarProduto()
+    }, [])
+
     const [produto, setProduto] = useState({
         id: null,
-        nome: '',
+        nome_produto: '',
         categoria: '',
         preco: '',
-        estoque: '',
+        quantidade: '',
         status: '',
         descricao: ''
     })
 
-    useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(produtos));
-    }, [produtos]);
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -57,10 +68,10 @@ const Produtos = () => {
     function addProduto() {
         setProduto({
             id: null,
-            nome: '',
+            nome_produto: '',
             categoria: '',
             preco: '',
-            estoque: '',
+            quantidade: '',
             status: '',
             descricao: ''
         })
@@ -68,31 +79,52 @@ const Produtos = () => {
         showAlert('Produto cadastrado com sucesso!', 'sucesso')
     }
 
-    function salvarProduto(e) {
+    async function salvarProduto(e) {
         e.preventDefault();
 
-        if (!produto.nome || !produto.categoria || !produto.preco || !produto.estoque || !produto.status) {
-            showAlert('Por favor, preencha todos os campos obrigatórios (Nome, Categoria, Preço, Estoque, Status).', 'erro');
+        if (!produto.nome_produto || !produto.categoria || !produto.preco || !produto.quantidade || !produto.status || !produto.descricao) {
+            showAlert('Por favor, preencha todos os campos obrigatórios (Nome, Categoria, Preço, Estoque, Status, descrição).', 'erro');
             return;
         }
 
-        const novoProduto = {
-            ...produto, id: Date.now(),
-            preco: Number(produto.preco),
-            estoque: Number(produto.estoque)
-        };
+        try {
+            const response = await fetch('http://127.0.0.1:3003/cadProdutos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome_produto: produto.nome_produto,
+                    categoria: produto.categoria,
+                    preco: produto.preco,
+                    quantidade: produto.quantidade,
+                    status: produto.status,
+                    descricao: produto.descricao
+                })
+            });
 
-        setProdutos(prevProdutos => [...prevProdutos, novoProduto])
-        addProduto()
+            const data = await response.json();
+
+            if (response.ok) {
+                showAlert(data.mensagem, 'sucesso')
+                addProduto()
+            } else {
+                showAlert(data.mensagem, 'erro')
+            }
+        } catch (error) {
+            showAlert('Erro de conexão com o banco', 'erro')
+            console.error('Erro: ', error)
+
+        }
     }
 
     function handleAddProdutoServico() {
         setProduto({
             id: null,
-            nome: '',
+            nome_produto: '',
             categoria: '',
             preco: '',
-            estoque: '',
+            quantidade: '',
             status: '',
             descricao: ''
         })
@@ -167,10 +199,10 @@ const Produtos = () => {
                             <tbody>
                                 {produtos.map(p => (
                                     <tr key={p.id}>
-                                        <td>{p.nome}</td>
+                                        <td>{p.nome_produto}</td>
                                         <td>{p.categoria}</td>
                                         <td>{'R$ ' + Number(p.preco).toFixed(2).replace('.', ',')}</td>
-                                        <td>{p.estoque}</td>
+                                        <td>{p.quantidade}</td>
                                         <td>{p.status}</td>
                                         <td>
                                             <button className="btn-acao" onClick={() => editar(p.id)}><BsFillPencilFill /></button>
@@ -192,10 +224,10 @@ const Produtos = () => {
 
                             <input
                                 type="text"
-                                id="nome"
-                                name="nome"
+                                id="nome_produto"
+                                name="nome_produto"
                                 placeholder="Nome do Produto"
-                                value={produto.nome}
+                                value={produto.nome_produto}
                                 onChange={handleChange}
                                 required
                             />
@@ -226,10 +258,10 @@ const Produtos = () => {
 
                                 <input
                                     type="number"
-                                    id="estoque"
-                                    name="estoque"
+                                    id="quantidade"
+                                    name="quantidade"
                                     placeholder="Quantidade em estoque"
-                                    value={produto.estoque}
+                                    value={produto.quantidade}
                                     onChange={handleChange}
                                     required
                                 />

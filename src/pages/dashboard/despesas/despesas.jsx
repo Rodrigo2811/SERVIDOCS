@@ -10,17 +10,13 @@ import { FormData } from "../../../components/util/util"
 
 import './despesas.css'
 
-const LOCAL_STORAGE_KEY = 'despesasCadastradas'
 const Despesas = () => {
 
     const [alertOn, setAlertOn] = useState(false);
     const [alertMensagem, setAlertMensagem] = useState('');
     const [alertType, setAlertType] = useState('')
     const [modalOpen, setModalOpen] = useState(false);
-    const [despesas, setDespesas] = useState(() => {
-        const storedDespesas = localStorage.getItem(LOCAL_STORAGE_KEY)
-        return storedDespesas ? JSON.parse(storedDespesas) : []
-    })
+    const [despesas, setDespesas] = useState([])
 
 
     function showAlert(mensagem, tipo) {
@@ -34,16 +30,31 @@ const Despesas = () => {
     }
     const [despesa, setDespesa] = useState({
         id: null,
-        nome: '',
+        despesa: '',
         valor: '',
         vencimento: '',
         status: ''
     })
 
     useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(despesas))
-    }, [despesas])
+        const buscarDespesas = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:3003/despesas')
 
+                const data = await response.json()
+
+                if (response.ok) {
+                    setDespesas(data)
+                } else {
+                    setDespesas([])
+                }
+            } catch (error) {
+                console.error('Erro ao buscar despesas', error)
+                showAlert('Erro ao carregar lista de despesas', error)
+            }
+        }
+        buscarDespesas()
+    }, [])
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -56,7 +67,7 @@ const Despesas = () => {
     function addDespesa() {
         setDespesa({
             id: null,
-            nome: '',
+            despesa: '',
             valor: '',
             vencimento: '',
             status: ''
@@ -64,20 +75,41 @@ const Despesas = () => {
         setModalOpen(false)
     }
 
-    function cadastrarDespesa(e) {
+    async function cadastrarDespesa(e) {
         e.preventDefault()
 
-        if (!despesa.nome || !despesa.valor || !despesa.vencimento || !despesa.status) {
+        if (!despesa.despesa || !despesa.valor || !despesa.vencimento || !despesa.status) {
             showAlert('Por favor, preencha todos os campos obrigatórios.', 'erro')
             return;
         }
 
-        const novaDespesa = { ...despesa, id: Date.now() }
+        try {
+            const response = await fetch('http://127.0.0.1:3003/cadDespesas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    despesa: despesa.despesa,
+                    valor: despesa.valor,
+                    vencimento: despesa.vencimento,
+                    status: despesa.status
+                })
+            });
 
-        setDespesas(prevDespesas => [...prevDespesas, novaDespesa])
-        addDespesa()
-        showAlert('Despesa cadastrada com sucesso !', 'sucesso')
+            const data = await response.json()
 
+            if (response.ok) {
+                showAlert(data.mensagem, 'sucesso')
+                addDespesa()
+
+            } else {
+                showAlert(data.mensagem, 'erro')
+            }
+        } catch (error) {
+            showAlert('Erro de conexao com o banco', 'erro')
+            console.error('Erro: ', error)
+        }
         setTimeout(() => {
             setModalOpen(false)
         }, 2000)
@@ -95,7 +127,7 @@ const Despesas = () => {
 
 
     const qtdDespesas = despesas.length
-    const totalDespesas = despesas.reduce((acc, d) => acc + Number(d.valor), 0)
+    //  const totalDespesas = despesas.reduce((acc, d) => acc + Number(d.valor), 0)
 
     return (
         <>
@@ -127,7 +159,7 @@ const Despesas = () => {
 
                         title='Total Despesas'
                         icon={<BsCurrencyDollar />}
-                        qtd={'R$ ' + (totalDespesas).toFixed(2)}
+                        qtd={'R$ '/* + ('').toFixed(2)*/}
                         description='Produtos cadastrados'
                     />
                 </div>
@@ -154,7 +186,7 @@ const Despesas = () => {
                             <tbody>
                                 {despesas.map(d => (
                                     <tr key={d.id}>
-                                        <td>{d.nome}</td>
+                                        <td>{d.despesa}</td>
                                         <td>{Number(d.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                                         <td>{FormData(d.vencimento)}</td>
                                         <td>{d.status}</td>
@@ -185,10 +217,10 @@ const Despesas = () => {
 
                                 <input
                                     type="text"
-                                    name="nome"
+                                    name="despesa"
                                     placeholder="Nome da despesa"
                                     onChange={handleChange}
-                                    value={despesa.nome}
+                                    value={despesa.despesa}
                                     required
                                 />
 
@@ -206,7 +238,6 @@ const Despesas = () => {
                                 <label htmlFor="preco">Vencimento</label><br /><br />
                                 <input
                                     type="date"
-
                                     name="vencimento"
                                     placeholder="Data"
                                     onChange={handleChange}

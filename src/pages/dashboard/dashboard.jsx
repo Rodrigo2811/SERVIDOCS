@@ -1,36 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../components/card/card";
 import DashboardLayout from "../../components/dashboardLayout/dashboardLayout";
 import { BsPerson, BsBoxSeam, BsCart3, BsCurrencyDollar, BsCalculatorFill } from "react-icons/bs";
 
-
+import { buscarClientes, buscarDespesas, buscarProdutos } from "../../components/util/api";
 
 import './dashboard.css'
 
 
-const LOCAL_STORAGE_PRODUTOS = 'produtosEstoque';
-const LOCAL_STORAGE_CLIENTES = 'clientesCadastrados'
-const LOCAL_STORAGE_DESPESAS = 'despesasCadastradas'
 const LOCAL_STORAGE_VENDAS = 'tbVendas'
 
 const Dashboard = () => {
 
 
-    const [produtos] = useState(() => {
-        const storedProducts = localStorage.getItem(LOCAL_STORAGE_PRODUTOS);
+    const [totalClientes, setTotalClientes] = useState(0);
+    const [totalProdutos, setTotalProdutos] = useState(0);
+    const [totalDespesas, setTotalDespesas] = useState(0);
 
-        return storedProducts ? JSON.parse(storedProducts) : [];
-    });
-    const [clientes] = useState(() => {
-        const storedClientes = localStorage.getItem(LOCAL_STORAGE_CLIENTES)
-        return storedClientes ? JSON.parse(storedClientes) : []
-    })
+    useEffect(() => {
+        const fetchData = async () => {
+            const [clientes, produtos, despesas] = await Promise.all([
+                buscarClientes(),
+                buscarProdutos(),
+                buscarDespesas()
+            ])
+            setTotalClientes(clientes.length)
+            setTotalProdutos(produtos.length)
+            setTotalDespesas(despesas.length)
+        }
+        fetchData()
+    }, [])
 
-    const [despesas] = useState(() => {
-        const storedDespesas = localStorage.getItem(LOCAL_STORAGE_DESPESAS)
-        return storedDespesas ? JSON.parse(storedDespesas) : []
 
-    })
+
+
 
     const [vendas] = useState(() => {
         const storedVendas = localStorage.getItem(LOCAL_STORAGE_VENDAS);
@@ -38,9 +41,8 @@ const Dashboard = () => {
     })
 
 
-    const totalClientes = clientes.length
-    const totalProdutos = produtos.length;
-    const totalDespesas = despesas.length
+
+
     const totalVendas = vendas.length
     const receitaTotal = vendas.reduce((acc, venda) => acc + Number(venda.total || 0), 0)
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout"
 
 import Card from "../../../components/card/card";
@@ -10,23 +10,31 @@ import { BsPerson, BsFillShieldLockFill } from 'react-icons/bs'
 
 import './usuarios.css'
 
-const LOCAL_STORAGE_KEY = 'userCadastrados'
 
 const Usuarios = () => {
 
-    const [user] = useState(() => {
-        const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY)
-
-        return storedUser ? JSON.parse(storedUser) : []
-    })
-
-    const listaAdm = user.filter(ad => ad.tipo_usuario === "Administrador")
+    const [usuarios, setUsuarios] = useState([])
 
 
-    let totalAdm = listaAdm.length
-    let totalUsuarios = user.length
+    useEffect(() => {
+        const buscarUsuarios = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:3003/usuarios')
+                const data = await response.json()
+                setUsuarios(data)
 
+            } catch (error) {
+                setUsuarios([])
+                console.error(error)
+            }
+        }
+        buscarUsuarios()
+    }, [])
 
+    const listaAdmFilter = usuarios.filter(ad => ad.tipo_usuario?.toString().trim().toLowerCase() === "administrador")
+
+    let totalAdm = listaAdmFilter.length
+    let totalUsuarios = usuarios.length
 
     return (
         <>
@@ -76,9 +84,9 @@ const Usuarios = () => {
                         </thead>
 
                         <tbody>
-                            {user.map(u => (
+                            {usuarios.map(u => (
                                 <tr key={u.id}>
-                                    <td>{u.nome_completo}</td>
+                                    <td>{u.username}</td>
                                     <td>{u.email}</td>
                                     <td>{u.tipo_usuario}</td>
                                     <td>{u.data}</td>

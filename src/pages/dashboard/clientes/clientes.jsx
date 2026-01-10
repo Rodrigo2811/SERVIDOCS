@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
@@ -8,17 +8,14 @@ import { formataTel, formataCPF } from "../../../components/util/util";
 
 import './clientes.css'
 
-const LOCAL_STORAGE_KEY = 'clientesCadastrados'
 
 const Clientes = () => {
     const [alertOn, setAlertOn] = useState(false)
     const [alertMensagem, setAlertMensagem] = useState('')
     const [alertType, setAlertType] = useState('')
     const [modalOpen, setModalClose] = useState(false);
-    const [clientes, setClientes] = useState(() => {
-        const storedClientes = localStorage.getItem(LOCAL_STORAGE_KEY)
-        return storedClientes ? JSON.parse(storedClientes) : []
-    })
+    const [clientes, setClientes] = useState([])
+
 
     function showAlert(mensagem, tipo) {
         setAlertMensagem(mensagem)
@@ -29,6 +26,26 @@ const Clientes = () => {
         }, 3000)
     }
 
+    useEffect(() => {
+        const buscarCliente = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:3003/clientes')
+                const data = await response.json()
+
+                if (response.ok) {
+                    setClientes(data)
+                } else {
+                    setClientes([])
+                }
+
+            } catch (error) {
+                console.error('Erro ao buscar clientes', error);
+                showAlert('Erro ao carregar lista de clientes', error)
+            }
+        }
+        buscarCliente()
+    }, [])
+
     const [cliente, setCliente] = useState({
         id: null,
         nome: '',
@@ -37,11 +54,6 @@ const Clientes = () => {
         telefone: '',
         endereco: ''
     })
-
-    useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(clientes))
-    }, [clientes])
-
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -64,7 +76,7 @@ const Clientes = () => {
         setModalClose(true)
     }
 
-    function salvarCliente(e) {
+    async function salvarCliente(e) {
         e.preventDefault();
 
         if (!cliente.nome || !cliente.cpf || !cliente.email || !cliente.telefone || !cliente.endereco) {
@@ -72,15 +84,36 @@ const Clientes = () => {
             return;
         }
 
-        const novoCliente = { ...cliente, id: Date.now() }
+        try {
+            const response = await fetch('http://127.0.0.1:3003/cadClientes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: cliente.nome,
+                    cpf: cliente.cpf,
+                    email: cliente.email,
+                    telefone: cliente.telefone,
+                    endereco: cliente.endereco
+                }),
+            });
 
-        setClientes(prevClientes => [...prevClientes, novoCliente])
-        addCliente()
-        showAlert('Cliente adcionado com sucesso', 'sucesso')
+            const data = await response.json();
 
-        setTimeout(() => {
-            setModalClose(false)
-        }, 2000)
+            if (response.ok) {
+                showAlert(data.mensagem, 'sucesso')
+                addCliente()
+
+            } else {
+                showAlert(data.mensagem, 'erro')
+            }
+        } catch (error) {
+            showAlert('Erro de conexão com o banco', 'erro');
+            console.error('Erro:', error)
+        }
+
+
     }
 
     function editar(id) {
@@ -88,12 +121,27 @@ const Clientes = () => {
     }
 
 
-    function removerCliente(id) {
-        setClientes(prevClientes => prevClientes.filter(c => c.id !== id))
-        showAlert('Cliente removido com sucesso', 'sucesso')
+    async function removerCliente(id) {
+        if (!window.confirm('Deseja realmente excluir?')) return
+
+        try {
+            const response = await fetch(`http://127.0.0.1:3003/clientes/${id}`, {
+                method: 'DELETE'
+            })
+
+            if (response.ok) {
+                setClientes(prev => prev.filter(c => c.id !== id));
+                showAlert('Cliente removido com sucesso', 'sucesso')
+
+            }
+        } catch (error) {
+            showAlert('Erro ao remover do banco de dados', error)
+        }
     }
 
     const totalClientes = clientes.length
+
+
 
     return (
         <>

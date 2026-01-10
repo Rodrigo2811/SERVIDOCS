@@ -70,22 +70,6 @@ const Login = () => {
 
     }
 
-    /*const userSalvos = JSON.parse(localStorage.getItem('userCadastrados') || "[]");
-   
-           const userEncontrato = userSalvos.find(user => user.email === email && user.password === String(password));
-   
-           if (userEncontrato) {
-               localStorage.setItem('logado', email)
-               showAlert(email + ' Logado com sucesso !', 'sucesso')
-   
-               setTimeout(() => {
-                   window.location.href = '/Dashboard'
-               }, 3000)
-   
-           } else {
-               showAlert('Email ou senha incorreto(s) !', 'erro')
-   
-           }*/
 
     return (
         <>
