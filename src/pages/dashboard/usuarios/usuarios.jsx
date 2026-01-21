@@ -71,7 +71,7 @@ const Usuarios = () => {
 
                 <div className="container-usuarios">
                     <h3>Lista de usuarios</h3>
-                    <p>Total de 0 usuarios cadastrados</p>
+                    <p>Total de {totalUsuarios} usuarios cadastrados</p>
                     <table>
                         <thead>
                             <tr>

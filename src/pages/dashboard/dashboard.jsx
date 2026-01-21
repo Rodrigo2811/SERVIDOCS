@@ -3,48 +3,42 @@ import Card from "../../components/card/card";
 import DashboardLayout from "../../components/dashboardLayout/dashboardLayout";
 import { BsPerson, BsBoxSeam, BsCart3, BsCurrencyDollar, BsCalculatorFill } from "react-icons/bs";
 
-import { buscarClientes, buscarDespesas, buscarProdutos } from "../../components/util/api";
+import { buscarClientes, buscarDespesas, buscarProdutos, buscarVendas } from "../../components/util/api";
 
 import './dashboard.css'
 
 
-const LOCAL_STORAGE_VENDAS = 'tbVendas'
-
 const Dashboard = () => {
-
 
     const [totalClientes, setTotalClientes] = useState(0);
     const [totalProdutos, setTotalProdutos] = useState(0);
     const [totalDespesas, setTotalDespesas] = useState(0);
+    const [totalVendas, setTotalVendas] = useState(0)
+    const [receitaTotal, setReceitaTotal] = useState(0)
 
     useEffect(() => {
         const fetchData = async () => {
-            const [clientes, produtos, despesas] = await Promise.all([
-                buscarClientes(),
-                buscarProdutos(),
-                buscarDespesas()
-            ])
-            setTotalClientes(clientes.length)
-            setTotalProdutos(produtos.length)
-            setTotalDespesas(despesas.length)
+
+            try {
+                const [clientes, produtos, despesas, vendas] = await Promise.all([
+                    buscarClientes(),
+                    buscarProdutos(),
+                    buscarDespesas(),
+                    buscarVendas()
+                ])
+                setTotalClientes(clientes.length)
+                setTotalProdutos(produtos.length)
+                setTotalDespesas(despesas.length)
+                setTotalVendas(vendas.length)
+                const totalCalculado = vendas.reduce((acc, vendas) => acc + Number(vendas.total || 0), 0)
+                setReceitaTotal(totalCalculado)
+            } catch (error) {
+                console.error(error)
+
+            }
         }
         fetchData()
     }, [])
-
-
-
-
-
-    const [vendas] = useState(() => {
-        const storedVendas = localStorage.getItem(LOCAL_STORAGE_VENDAS);
-        return storedVendas ? JSON.parse(storedVendas) : []
-    })
-
-
-
-
-    const totalVendas = vendas.length
-    const receitaTotal = vendas.reduce((acc, venda) => acc + Number(venda.total || 0), 0)
 
 
     return (

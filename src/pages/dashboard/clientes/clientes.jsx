@@ -26,25 +26,29 @@ const Clientes = () => {
         }, 3000)
     }
 
-    useEffect(() => {
-        const buscarCliente = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:3003/clientes')
-                const data = await response.json()
 
-                if (response.ok) {
-                    setClientes(data)
-                } else {
-                    setClientes([])
-                }
+    const buscarCliente = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:3003/clientes')
+            const data = await response.json()
 
-            } catch (error) {
-                console.error('Erro ao buscar clientes', error);
-                showAlert('Erro ao carregar lista de clientes', error)
+            if (response.ok) {
+                setClientes(data)
+
+            } else {
+                setClientes([])
             }
+
+        } catch (error) {
+            console.error('Erro ao buscar clientes', error);
+            showAlert('Erro ao carregar lista de clientes', error)
         }
+    }
+    useEffect(() => {
         buscarCliente()
     }, [])
+
+
 
     const [cliente, setCliente] = useState({
         id: null,
@@ -62,6 +66,8 @@ const Clientes = () => {
             ...prevCliente, [name]: value
         }))
     }
+
+
 
 
     function addCliente() {
@@ -104,6 +110,7 @@ const Clientes = () => {
             if (response.ok) {
                 showAlert(data.mensagem, 'sucesso')
                 addCliente()
+                buscarCliente()
 
             } else {
                 showAlert(data.mensagem, 'erro')
@@ -132,7 +139,7 @@ const Clientes = () => {
             if (response.ok) {
                 setClientes(prev => prev.filter(c => c.id !== id));
                 showAlert('Cliente removido com sucesso', 'sucesso')
-
+                buscarCliente()
             }
         } catch (error) {
             showAlert('Erro ao remover do banco de dados', error)

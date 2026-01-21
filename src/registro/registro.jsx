@@ -15,10 +15,6 @@ const Registrar = () => {
     const [alertOn, setAlertOn] = useState(false)
     const [aletMensagem, setAlertMensagem] = useState('')
     const [alertType, setAlertType] = useState('')
-    /*const [users, setUsers] = useState()  /* => {
-         const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY)
-         return storedUser ? JSON.parse(storedUser) : []
-     })*/
 
 
     function showAlert(mensagem, tipo) {
@@ -42,10 +38,6 @@ const Registrar = () => {
         conf_senha: ''
     })
 
-
-    /* useEffect(() => {
-         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users))
-     }, [users])*/
 
     function handleChange(e) {
         const { name, value } = e.target;

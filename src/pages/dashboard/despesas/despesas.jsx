@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout"
 import Card from "../../../components/card/card"
@@ -36,25 +36,29 @@ const Despesas = () => {
         status: ''
     })
 
-    useEffect(() => {
-        const buscarDespesas = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:3003/despesas')
 
-                const data = await response.json()
+    const buscarDespesas = useCallback(async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:3003/despesas')
 
-                if (response.ok) {
-                    setDespesas(data)
-                } else {
-                    setDespesas([])
-                }
-            } catch (error) {
-                console.error('Erro ao buscar despesas', error)
-                showAlert('Erro ao carregar lista de despesas', error)
+            const data = await response.json()
+
+            if (response.ok) {
+                setDespesas(data)
+            } else {
+                setDespesas([])
             }
+        } catch (error) {
+            console.error('Erro ao buscar despesas', error)
+            showAlert('Erro ao carregar lista de despesas', error)
         }
-        buscarDespesas()
     }, [])
+
+
+    useEffect(() => {
+        buscarDespesas()
+    }, [buscarDespesas])
+
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -102,6 +106,8 @@ const Despesas = () => {
             if (response.ok) {
                 showAlert(data.mensagem, 'sucesso')
                 addDespesa()
+                buscarDespesas()
+
 
             } else {
                 showAlert(data.mensagem, 'erro')
@@ -120,14 +126,27 @@ const Despesas = () => {
     }
 
 
-    function removerDespesa(id) {
-        setDespesas(prevDespesas => prevDespesas.filter(d => d.id !== id))
-        showAlert('Despesa removida com sucesso', 'sucesso')
+    async function removerDespesa(id) {
+        if (!window.confirm('Deseja realmente excluir?')) return
+
+        try {
+            const response = await fetch(`http://127.0.0.1:3003/despesas/${id}`, {
+                method: 'DELETE'
+            })
+
+            if (response.ok) {
+                setDespesas(prev => prev.filter(d => d.id !== id));
+                showAlert('Despesa removida com sucesso', 'sucesso')
+
+            }
+        } catch (error) {
+            showAlert('Erro ao remover do banco de dados', error)
+        }
     }
 
 
     const qtdDespesas = despesas.length
-    //  const totalDespesas = despesas.reduce((acc, d) => acc + Number(d.valor), 0)
+    const totalDespesas = despesas.reduce((acc, d) => acc + Number(d.valor), 0)
 
     return (
         <>
@@ -159,8 +178,8 @@ const Despesas = () => {
 
                         title='Total Despesas'
                         icon={<BsCurrencyDollar />}
-                        qtd={'R$ '/* + ('').toFixed(2)*/}
-                        description='Produtos cadastrados'
+                        qtd={'R$ ' + (totalDespesas).toFixed(2)}
+                        description='Total de Despesas'
                     />
                 </div>
 

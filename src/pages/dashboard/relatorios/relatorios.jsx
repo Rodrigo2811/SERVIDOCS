@@ -1,38 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Card from "../../../components/card/card";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
 import { BsCurrencyDollar, BsGraphUpArrow, BsFillCalendar2Fill, BsBag } from "react-icons/bs";
 
+import { FormData } from '../../../components/util/util.js'
+
 
 import './relatorio.css'
 
 
-const LOCAL_STORAGE_VENDAS = 'tbVendas';
-
 const Relatorios = () => {
+    const [vendas, setVendas] = useState([])
+    const [receitaTotal, setReceitaTotal] = useState(0)
+    const [itensVendidos, setItensVendidos] = useState(0)
+    const [totaisPorMetodo, setTotaisPorMetodo] = useState({})
+
+    useEffect(() => {
+        const buscarVendas = async () => {
+            try {
+
+                const response = await fetch('http://127.0.0.1:3003/vendas')
+                const data = await response.json()
+                if (response.ok) {
+                    setVendas(data)
+                    const totalCalculado = data.reduce((acc, vendas) => acc + Number(vendas.total || 0), 0)
+                    const totalItensVendidos = data.reduce((acc, item) => acc + (item.quantidade || 0), 0)
+
+                    setReceitaTotal(totalCalculado)
+                    setItensVendidos(totalItensVendidos)
+
+                    const totaisPorMetodoCalculado = data.reduce((acc, venda) => {
+                        const metodo = venda.formaPagamento || 'Desconhecido'
+                        acc[metodo] = (acc[metodo] || 0) + Number(venda.total || 0)
+                        return acc
+                    }, {})
 
 
-    const [vendas] = useState(() => {
-        const storedVendas = localStorage.getItem(LOCAL_STORAGE_VENDAS);
-        return storedVendas ? JSON.parse(storedVendas) : []
-    })
-
-    const totaisPorMetodo = vendas.reduce((acc, venda) => {
-        const metodo = venda.formaPagamento;
-        const valor = Number(venda.total || 0);
-
-        if (!acc[metodo]) {
-            acc[metodo] = 0
+                    setTotaisPorMetodo(totaisPorMetodoCalculado)
+                } else {
+                    setVendas([])
+                }
+            } catch (error) {
+                console.error(error)
+            }
         }
-        acc[metodo] += valor;
-        return acc;
-    }, {})
+        buscarVendas()
 
-
-    const totalVendas = vendas.length
-    const receitaTotal = vendas.reduce((acc, venda) => acc + Number(venda.total || 0), 0)
+    }, [vendas])
 
     return (
         <>
@@ -48,27 +64,27 @@ const Relatorios = () => {
                         title='Receita Total'
                         icon={<BsCurrencyDollar />}
                         qtd={"R$" + receitaTotal.toFixed(2)}
-                        description={'0 vendas realizadas'}
+                        description={`${vendas.length} vendas realizadas`}
                     />
 
                     <Card
                         title='Total de Vendas'
                         icon={<BsBag />}
-                        qtd={totalVendas}
+                        qtd={vendas.length}
                         description='Tranzações concluidas'
                     />
 
                     <Card
                         title='Itens Vendidos'
                         icon={<BsGraphUpArrow />}
-                        qtd={0}
+                        qtd={itensVendidos}
                         description='Produtos comercializados'
                     />
 
                     <Card
                         title='Ticket Médio'
                         icon={<BsFillCalendar2Fill />}
-                        qtd={"R$" + (receitaTotal / totalVendas).toFixed(2)}
+                        qtd={"R$" + Number(vendas.length > 0 ? (receitaTotal / vendas.length).toFixed(2) : "0.00")}
                         description='Valor médio por venda'
                     />
                 </div>
@@ -94,8 +110,8 @@ const Relatorios = () => {
                                     {vendas.map((v, index) => (
                                         <tr key={index}>
                                             <td>{v.cliente}</td>
-                                            <td>{v.data}</td>
-                                            <td>{"R$ " + v.total.toFixed(2)}</td>
+                                            <td>{FormData(v.data)}</td>
+                                            <td>{"R$ " + v.total}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -108,10 +124,9 @@ const Relatorios = () => {
                         <p>Distribuição dos métodos de pagamento</p>
 
                         <ul>
-                            <li>Dinheiro <span>R$ {(totaisPorMetodo['Dinheiro'] || 0).toFixed(2)}</span></li>
-                            <li>Crédito <span>R$ {(totaisPorMetodo['Crédito'] || 0).toFixed(2)}</span></li>
-                            <li>Débito <span>R$ {(totaisPorMetodo['Débito'] || 0).toFixed(2)}</span></li>
-                            <li>Pix <span>R$ {(totaisPorMetodo['Pix'] || 0).toFixed(2)}</span></li>
+                            {Object.entries(totaisPorMetodo).map(([nome, valor]) => (
+                                <li key={nome}>{nome} <span>R$ {valor.toFixed(2)}</span></li>
+                            ))}
                         </ul>
                     </div>
                 </div>

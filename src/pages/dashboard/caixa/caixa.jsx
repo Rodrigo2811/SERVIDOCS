@@ -1,24 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
 import { BsCCircle, BsCurrencyDollar, BsXCircle } from 'react-icons/bs'
 
+import { buscarClientes, buscarProdutos } from "../../../components/util/api";
+
 import './caixa.css'
+import NotaServico from "../../../components/notaServico/notaServico";
 
 
-const LOCAL_STORAGE_ESTOQUE = 'produtosEstoque';
-const LOCAL_STORAGE_CLIENTE = 'clientesCadastrados'
-const LOCAL_STORAGE_VENDAS = 'tbVendas';
 const Caixa = () => {
 
-    const [vendas, setVendas] = useState(() => {
-        const storedVendas = localStorage.getItem(LOCAL_STORAGE_VENDAS);
-        return storedVendas ? JSON.parse(storedVendas) : []
-    })
-    const [cliente] = useState(() => {
-        const storedClientes = localStorage.getItem(LOCAL_STORAGE_CLIENTE);
-        return storedClientes ? JSON.parse(storedClientes) : []
-    })
+    const [clientes, setClientes] = useState([])
     const [clienteSelecionado, SetClienteSelecionado] = useState('')
     const [formaPagamento, setFormaPagamento] = useState('')
     const [desconto, setDesconto] = useState(0)
@@ -27,7 +21,27 @@ const Caixa = () => {
     const [searchTem, setSearchTerm] = useState('')
     const [foundProducts, setFoudProducts] = useState([])
 
-    function handleSearch(e) {
+    const [mostrarNota, setMostrarNota] = useState(false)
+    const [vendaFinalizada, setVendaFinalizada] = useState(null)
+
+
+    useEffect(() => {
+        const fetchClientes = async () => {
+            try {
+                const data = await buscarClientes()
+
+                setClientes(data || [])
+            } catch (error) {
+                console.error('Erro ao buscar clientes: ', error)
+            }
+
+        }
+        fetchClientes()
+    }, [])
+
+
+
+    async function handleSearch(e) {
         const term = e.target.value;
         setSearchTerm(term)
 
@@ -37,14 +51,16 @@ const Caixa = () => {
         }
 
         try {
-            const productJson = localStorage.getItem(LOCAL_STORAGE_ESTOQUE);
-            const allProducts = productJson ? JSON.parse(productJson) : []
+            const allProducts = await buscarProdutos()
 
-            const filtered = allProducts.filter(product =>
-                product.nome.toLowerCase().includes(term.toLowerCase()) ||
-                String(product.id).includes(term)
-            )
-            setFoudProducts(filtered)
+            const productsArray = typeof allProducts === 'string' ? JSON.parse(allProducts) : allProducts;
+
+            if (Array.isArray(productsArray)) {
+                const filtered = productsArray.filter(product =>
+                    product.nome_produto.toLowerCase().includes(term.toLowerCase()) || String(product.id).includes(term)
+                );
+                setFoudProducts(filtered)
+            }
         } catch (error) {
             console.error('Erro ao buscar ou analisar produtos:', error);
             setFoudProducts([])
@@ -69,44 +85,6 @@ const Caixa = () => {
     }
 
 
-    function finalizarVenda(e) {
-        e.preventDefault()
-
-        if (carrinho.length === 0) {
-            alert('O carrinho está vazio');
-            return;
-        }
-
-        if (formaPagamento === "") {
-            alert('Escolha uma forma de pagamento')
-            return
-        }
-
-        const novaVenda = {
-            id: Date.now,
-            data: new Date().toLocaleString(),
-            cliente: clienteSelecionado || "Consumidor final",
-            itens: carrinho,
-            subTotal: subTotal,
-            desconto: desconto,
-            total: valorTotal,
-            formaPagamento: formaPagamento
-        }
-
-        const vendasAtualizadas = [...vendas, novaVenda];
-        setVendas(vendasAtualizadas)
-
-        localStorage.setItem(LOCAL_STORAGE_VENDAS, JSON.stringify(vendasAtualizadas))
-
-        setCarrinho([])
-        setDesconto(0)
-        SetClienteSelecionado("")
-        setFormaPagamento("")
-        setValorRecebido(0)
-
-        alert('Venda Finalizada com sucesso!')
-    }
-
     const cancelarVenda = () => {
         if (window.confirm("Deseja cancelar a venda?")) {
             setCarrinho([])
@@ -126,17 +104,96 @@ const Caixa = () => {
                 return item
             })
         })
-
     }
 
+    async function finalizarVenda(e) {
+        e.preventDefault()
+
+        if (carrinho.length === 0) {
+            alert('O carrinho está vazio');
+            return;
+        }
+
+        if (formaPagamento === "") {
+            alert('Escolha uma forma de pagamento')
+            return
+        }
+
+        const subTotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
+        const valorTotal = subTotal - desconto
+        const trocoCalculado = (valorRecebido - valorTotal).toFixed(2)
+
+        const novaVenda = {
+            data: new Date().toISOString(),
+            cliente: clienteSelecionado || "Consumidor final",
+            itens: carrinho.map(item => ({
+                id_pproduto: item.id,
+                nome: item.nome_produto,
+                quantidade: item.quantidade,
+                preco_unitario: item.preco
+
+            })),
+            formaPagamento: formaPagamento,
+            subTotal: subTotal.toFixed(2),
+            desconto: Number(desconto).toFixed(2),
+            total: valorTotal.toFixed(2),
+            valorRecebido: Number(valorRecebido).toFixed(2),
+            troco: trocoCalculado,
+
+        }
+
+        try {
+            const response = await fetch('http://127.0.0.1:3003/vendas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(novaVenda)
+
+            })
+
+            const data = await response.json()
+
+            if (response.ok) {
+                alert(data.mensagem)
+
+
+                setMostrarNota(true)
+                setVendaFinalizada(novaVenda)
+
+
+
+                setCarrinho([])
+                SetClienteSelecionado("")
+                setDesconto(0)
+                setValorRecebido(0)
+                setFormaPagamento("")
+                SetClienteSelecionado("")
+                setSearchTerm("")
+
+
+            } else {
+                alert(data.mensagem)
+            }
+
+        } catch (error) {
+            console.error('Erro: ', error)
+        }
+    }
 
     const subTotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
     const valorTotal = subTotal - desconto
-    const troco = (valorRecebido - valorTotal).toFixed(2)
+    const trocoCalculado = (valorRecebido - valorTotal).toFixed(2)
 
     return (
         <DashboardLayout>
 
+            {mostrarNota && (
+                <NotaServico
+                    dados={vendaFinalizada}
+                    fechar={() => setMostrarNota(false)}
+                />
+            )}
             <header>
                 <h1>Frente de Caixa</h1>
                 <p>Sistema de vendas PDV</p>
@@ -154,7 +211,7 @@ const Caixa = () => {
                         <div className="results-dropdown">
                             {foundProducts.map(product => (
                                 <div key={product.id} className="result-item" onClick={() => addCarrinho(product)} styele={{ cursor: 'pointer' }}>
-                                    <span>{product.nome}</span>
+                                    <span>{product.nome_produto}</span>
                                     <span className="product-price">{parseFloat(product.preco).toFixed(2)}</span>
                                     <BsCCircle />
                                 </div>
@@ -170,7 +227,7 @@ const Caixa = () => {
                     <div className="lsita-itens-carrinho">
                         {carrinho.map((item) => (
                             <div key={item.id} className="item-carrinho">
-                                <span>{item.nome} </span>
+                                <span>{item.nome_produto} </span>
                                 <span>{"R$ " + (item.preco * item.quantidade).toFixed(2)}</span>
                                 <div style={{ display: 'flex', justifyContent: 'space-around', gap: '5px', alignItems: 'center' }}>
                                     <button onClick={() => alteraQuantidade(item.id, 1)} style={{ padding: '5px', width: '35px', backgroundColor: 'green', border: 'none', color: 'white' }}>+</button>
@@ -185,7 +242,7 @@ const Caixa = () => {
                     <select onChange={(e) => SetClienteSelecionado(e.target.value)}>
                         <option value="Selecione um cliente">Selecione um Cliente</option>
                         {
-                            cliente.map((element, index) => {
+                            clientes.map((element, index) => {
                                 return <option key={index} value={element.nome}>{element.nome}</option>
                             })
                         }
@@ -202,7 +259,7 @@ const Caixa = () => {
                     <div style={{ display: 'flex', gap: '5px' }}>
                         <div>
                             <label >Valor Recebido(R$)</label><br />
-                            <input type="number" className="impValorRecebido" placeholder="0,00" onChange={(e) => setValorRecebido(e.target.value).toFixed(2)} />
+                            <input type="number" className="impValorRecebido" value={valorRecebido} placeholder="0,00" onChange={(e) => setValorRecebido(e.target.value)} />
                         </div>
 
                         <div>
@@ -212,7 +269,7 @@ const Caixa = () => {
 
                         <div>
                             <label >Troco(R$)</label><br />
-                            <input type="number" className="impTroco" placeholder="0,00" value={troco} disabled />
+                            <input type="number" className="impTroco" placeholder="0,00" value={trocoCalculado} disabled />
                         </div>
 
 
@@ -230,6 +287,7 @@ const Caixa = () => {
             </div>
         </DashboardLayout >
     )
+
 }
 
 export default Caixa;

@@ -8,28 +8,28 @@ export const formataCPF = (valor) => {
 
     const limpo = valor.replace(/\D/g, '')
 
+    return limpo.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
 
-    if (valor.length <= 11) {
-        return limpo.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
-    } else {
-        return limpo.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
-
-    }
 
 }
 
 export const dataRegistro = () => {
     const data = new Date()
-    const dia = data.getDay()
+    const dia = data.getDate()
     const mes = data.getMonth()
     const ano = data.getFullYear()
 
-    return `${dia}/${mes}/${ano}`
+    return `${dia}/${mes + 1}/${ano}`
 }
 
 
 export const FormData = (dataStr) => {
-    if (!dataStr) return '';
-    const [ano, mes, dia] = dataStr.split('-');
-    return `${dia}/${mes}/${ano}`;
+    const data = new Date(dataStr);
+
+    return new Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    }).format(data)
+
 }

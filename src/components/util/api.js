@@ -5,6 +5,12 @@ export const buscarClientes = async () => {
 
         if (!response.ok) return []
 
+
+
+        if (response.length === 0) {
+            return []
+        }
+
         const data = await response.json()
         return Array.isArray(data) ? data : []
     } catch (error) {
@@ -34,6 +40,19 @@ export const buscarDespesas = async () => {
         const response = await fetch('http://127.0.0.1:3003/despesas')
         if (!response.ok) return []
 
+
+        const data = await response.json()
+        return Array.isArray(data) ? data : []
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export const buscarVendas = async () => {
+    try {
+        const response = await fetch('http://127.0.0.1:3003/vendas')
+
+        if (!response.ok) return []
 
         const data = await response.json()
         return Array.isArray(data) ? data : []

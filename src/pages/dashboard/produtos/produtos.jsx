@@ -9,6 +9,7 @@ import { BsBoxSeam, BsCurrencyDollar, BsFillPencilFill, BsFillTrashFill, BsPlus 
 import './produtos.css'
 
 
+
 const Produtos = () => {
 
     const [modalOpen, setModalOpen] = useState(false)
@@ -27,24 +28,29 @@ const Produtos = () => {
         }, 3000)
     }
 
-    useEffect(() => {
-        const buscarProduto = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:3003/produtos')
-                const data = await response.json()
 
-                if (response.ok) {
-                    setProdutos(data)
-                } else {
-                    setProdutos([])
-                }
-            } catch (error) {
-                console.error('Erro ao buscar produtos', error)
-                showAlert('Erro ao carregar lista de produtos', 'erro')
+    const buscarProduto = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:3003/produtos')
+            const data = await response.json()
+
+            if (response.ok) {
+                setProdutos(data)
+            } else {
+                setProdutos([])
             }
+        } catch (error) {
+            console.error('Erro ao buscar produtos', error)
+            showAlert('Erro ao carregar lista de produtos', 'erro')
         }
+    }
+
+    useEffect(() => {
         buscarProduto()
     }, [])
+
+
+
 
     const [produto, setProduto] = useState({
         id: null,
@@ -108,6 +114,7 @@ const Produtos = () => {
             if (response.ok) {
                 showAlert(data.mensagem, 'sucesso')
                 addProduto()
+                buscarProduto()
             } else {
                 showAlert(data.mensagem, 'erro')
             }
@@ -135,14 +142,27 @@ const Produtos = () => {
         showAlert('editar: ' + id)
     }
 
-    function removerProduto(id) {
-        setProdutos(prevProdutos => prevProdutos.filter(p => p.id !== id));
-        showAlert('Produto removido.', 'sucesso');
+    async function removerProduto(id) {
+        if (!window.confirm('Deseja realmente excluir o produto?')) return
+
+        try {
+            const response = await fetch(`http://127.0.0.1:3003/produtos/${id}`, {
+                method: 'DELETE'
+            })
+
+            if (response.ok) {
+                setProdutos(prev => prev.filter(p => p.id !== id))
+                showAlert('Produto removido com sucesso', 'sucesso')
+                buscarProduto()
+            }
+        } catch (error) {
+            showAlert('Erro ao remover produto', error)
+        }
     }
 
     const totalProdutos = produtos.length;
-    const estoqueTotal = produtos.reduce((acc, p) => acc + (Number(p.estoque) || 0), 0);
-    const valorTotalEstoque = produtos.reduce((acc, p) => acc + (Number(p.preco) * Number(p.estoque) || 0), 0);
+    const estoqueTotal = produtos.reduce((acc, p) => acc + (Number(p.quantidade) || 0), 0);
+    const valorTotalEstoque = produtos.reduce((acc, p) => acc + (Number(p.preco) * Number(p.quantidade) || 0), 0);
 
     return (
         <>
