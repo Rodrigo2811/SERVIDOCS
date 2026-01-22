@@ -66,6 +66,7 @@ const NotaServico = ({ dados, fechar }) => {
 
                     <div style={{ margin: '20px 0' }}>
                         <p><strong>CLIENTE:</strong> {dados.cliente}</p>
+                        <p><strong>CPF/CNPJ: {dados.cpf || 'Não Informado'}</strong></p>
                         <p><strong>DATA:</strong> {new Date(dados.data).toLocaleString()}</p>
                     </div>
 
