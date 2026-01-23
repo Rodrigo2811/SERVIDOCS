@@ -4,6 +4,7 @@ import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 import Alert from "../../../components/alert/alert";
 
+
 import { formataTel, formataCPF } from "../../../components/util/util";
 
 import './clientes.css'
@@ -68,8 +69,6 @@ const Clientes = () => {
     }
 
 
-
-
     function addCliente() {
         setCliente({
             id: null,
@@ -82,49 +81,50 @@ const Clientes = () => {
         setModalClose(true)
     }
 
+    async function editar(id) {
+        const clienteParaEditar = clientes.find(c => c.id === id);
+        if (clienteParaEditar) {
+            setCliente(clienteParaEditar); // Preenche os campos com os dados do cliente
+            setModalClose(true);
+        }
+    }
+
+    // Salva (Cria ou Atualiza)
     async function salvarCliente(e) {
         e.preventDefault();
 
         if (!cliente.nome || !cliente.cpf || !cliente.email || !cliente.telefone || !cliente.endereco) {
-            showAlert('Por favor, preencha todos os campos obrigatórios', 'erro')
+            showAlert('Por favor, preencha todos os campos obrigatórios', 'erro');
             return;
         }
 
+        // Define se é atualização ou cadastro novo
+        const isEditing = cliente.id !== null;
+        const url = isEditing
+            ? `http://127.0.0.1:3003/clientes/${cliente.id}`
+            : 'http://127.0.0.1:3003/cadClientes';
+
+        const method = isEditing ? 'PUT' : 'POST';
+
         try {
-            const response = await fetch('http://127.0.0.1:3003/cadClientes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    nome: cliente.nome,
-                    cpf: cliente.cpf,
-                    email: cliente.email,
-                    telefone: cliente.telefone,
-                    endereco: cliente.endereco
-                }),
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cliente),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                showAlert(data.mensagem, 'sucesso')
-                addCliente()
-                buscarCliente()
-
+                showAlert(isEditing ? 'Atualizado com sucesso!' : 'Cadastrado com sucesso!', 'sucesso');
+                setModalClose(false); // Fecha o modal
+                buscarCliente();      // Recarrega a lista
             } else {
-                showAlert(data.mensagem, 'erro')
+                showAlert(data.mensagem, 'erro');
             }
         } catch (error) {
-            showAlert('Erro de conexão com o banco', 'erro');
-            console.error('Erro:', error)
+            showAlert('Erro de conexão com o servidor', 'erro', error);
         }
-
-
-    }
-
-    function editar(id) {
-        showAlert('editar: ' + id)
     }
 
 
@@ -206,25 +206,33 @@ const Clientes = () => {
 
 
                 {modalOpen && (
-                    <div className="modal-addCliente" >
+                    <div className="modal-addCliente">
                         <header>
-                            <h3>Novo Cliente</h3>
-                            <p>Preencha os dados para cadastrar um novo cliente</p>
+                            <h3>{cliente.id ? 'Editar Cliente' : 'Novo Cliente'}</h3>
+                            <p>{cliente.id ? 'Altere os dados abaixo' : 'Preencha os dados para cadastrar'}</p>
                         </header>
                         <form onSubmit={salvarCliente}>
+                            <label>Nome / Razão Social</label><br />
+                            <input type="text" name="nome" placeholder="Nome Completo" value={cliente.nome} onChange={handleChange} />
 
-                            <label >Novo / Ração Social</label><br />
-                            <input type="text" name="nome" placeholder="Novo Completo" value={cliente.nome} onChange={handleChange} />
-                            <label >CPF / CNPJ</label>
-                            <input type="text" name="cpf" placeholder="CPF" onChange={handleChange} value={cliente.cpf} />
-                            <label >Telefone</label><br /><br />
-                            <input type="Preço" name="telefone" placeholder="Telefone" onChange={handleChange} value={cliente.telefone} />
-                            <label >Email</label><br />
-                            <input type="email" name="email" placeholder="Email" onChange={handleChange} value={cliente.email} />
-                            <label >Endereço</label><br />
-                            <input type="text" name="endereco" placeholder="Endereço" onChange={handleChange} value={cliente.endereco} />
+                            <label>CPF / CNPJ</label>
+                            <input type="text" name="cpf" placeholder="CPF" value={cliente.cpf} onChange={handleChange} />
 
-                            <footer><button className="btn-cancelar" onClick={() => setModalClose()}>Cancelar</button> <button className="btn-cadastrar" type="submit">Cadastrar</button></footer>
+                            <label>Telefone</label><br />
+                            <input type="text" name="telefone" placeholder="Telefone" value={cliente.telefone} onChange={handleChange} />
+
+                            <label>Email</label><br />
+                            <input type="email" name="email" placeholder="Email" value={cliente.email} onChange={handleChange} />
+
+                            <label>Endereço</label><br />
+                            <input type="text" name="endereco" placeholder="Endereço" value={cliente.endereco} onChange={handleChange} />
+
+                            <footer>
+                                <button type="button" className="btn-cancelar" onClick={() => setModalClose(false)}>Cancelar</button>
+                                <button className="btn-cadastrar" type="submit">
+                                    {cliente.id ? 'Salvar Alterações' : 'Cadastrar'}
+                                </button>
+                            </footer>
                         </form>
                     </div>
                 )}

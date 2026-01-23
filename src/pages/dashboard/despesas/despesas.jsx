@@ -76,7 +76,7 @@ const Despesas = () => {
             vencimento: '',
             status: ''
         })
-        setModalOpen(false)
+        setModalOpen(true)
     }
 
     async function cadastrarDespesa(e) {
@@ -87,30 +87,31 @@ const Despesas = () => {
             return;
         }
 
+        const isEditing = despesa.id !== null
+            ;
+        const url = isEditing
+            ? `http://127.0.0.1:3003/despesas/${despesa.id}`
+            : `http://127.0.0.1:3003/cadDespesas`;
+
+        const method = isEditing ? 'PUT' : 'POST';
         try {
-            const response = await fetch('http://127.0.0.1:3003/cadDespesas', {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    despesa: despesa.despesa,
-                    valor: despesa.valor,
-                    vencimento: despesa.vencimento,
-                    status: despesa.status
-                })
+                body: JSON.stringify(despesa)
             });
 
             const data = await response.json()
 
             if (response.ok) {
-                showAlert(data.mensagem, 'sucesso')
+                showAlert(isEditing ? 'Atualizado com sucesso !' : 'Cadastrato com sucesso', 'sucesso')
+                setModalOpen(false)
                 addDespesa()
                 buscarDespesas()
-
-
             } else {
-                showAlert(data.mensagem, 'erro')
+                showAlert(data.mensagem || 'Erro ao processar ', 'erro')
             }
         } catch (error) {
             showAlert('Erro de conexao com o banco', 'erro')
@@ -122,7 +123,20 @@ const Despesas = () => {
     }
 
     function editar(id) {
-        showAlert('editar: ' + id)
+        const despesaParaEditar = despesas.find(d => d.id === id)
+
+        if (despesaParaEditar) {
+
+
+            setDespesa({
+                id: despesaParaEditar.id,
+                despesa: despesaParaEditar.despesa.trim(),
+                valor: despesaParaEditar.valor,
+                vencimento: despesaParaEditar.vencimento ? despesaParaEditar.vencimento.split('T')[0] : '',
+                status: despesaParaEditar.status.trim()
+            })
+            setModalOpen(true)
+        }
     }
 
 
@@ -160,7 +174,7 @@ const Despesas = () => {
 
                     </div>
 
-                    <button className="btn-novoCliente" onClick={() => setModalOpen(true)}><BsPlus className="iconBTN" />Nova Despesa</button>
+                    <button className="btn-novoCliente" onClick={addDespesa}><BsPlus className="iconBTN" />Nova Despesa</button>
 
                 </header>
 
@@ -205,10 +219,10 @@ const Despesas = () => {
                             <tbody>
                                 {despesas.map(d => (
                                     <tr key={d.id}>
-                                        <td>{d.despesa}</td>
+                                        <td>{d.despesa.trim()}</td>
                                         <td>{Number(d.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                                         <td>{FormData(d.vencimento)}</td>
-                                        <td>{d.status}</td>
+                                        <td>{d.status.trim()}</td>
                                         <td>
                                             <button className="btn-acao" onClick={() => editar(d.id)} ><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerDespesa(d.id)}><BsFillTrashFill /></button>
@@ -227,8 +241,8 @@ const Despesas = () => {
                     modalOpen && (
                         <div className="modal-addDespesas" >
                             <header>
-                                <h3>Nova Despesa</h3>
-                                <p>Preencha os dados para cadastrar uma nova despesa</p>
+                                <h3>{despesa.id ? 'Editar Despesa' : 'Nova Despesa'}</h3>
+                                <p>{despesa.id ? 'Altere os dados abaixo' : 'Preencha os dados para cadastrar uma nova despesa'}</p>
                             </header>
                             <form onSubmit={cadastrarDespesa}>
 
@@ -246,7 +260,6 @@ const Despesas = () => {
                                 <label htmlFor="categoria">Valor</label>
                                 <input
                                     type="Number"
-
                                     name="valor"
                                     placeholder="valor"
                                     onChange={handleChange}
@@ -267,7 +280,6 @@ const Despesas = () => {
                                 <label htmlFor="status">Status</label><br />
 
                                 <select
-
                                     name="status"
                                     onChange={handleChange}
                                     value={despesa.status}
@@ -283,7 +295,7 @@ const Despesas = () => {
 
                                 <footer>
                                     <button className="btn-cancelar" type="button" onClick={() => setModalOpen(false)}>Cancelar</button>
-                                    <button className="btn-cadastrar" type="submit">Cadastrar</button>
+                                    <button className="btn-cadastrar" type="submit" onClick={cadastrarDespesa}>{despesa.id ? 'Salvar ALterações' : 'Cadastrar'}</button>
                                 </footer>
                             </form>
                         </div>

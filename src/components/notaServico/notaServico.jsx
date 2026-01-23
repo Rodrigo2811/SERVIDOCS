@@ -62,7 +62,7 @@ const NotaServico = ({ dados, fechar }) => {
                         </div>
                     </div>
 
-                    <h2 style={{ textAlign: 'center', marginTop: '20px' }}>NOTA DE SERVIÇO</h2>
+                    <h2 style={{ textAlign: 'center', marginTop: '20px' }}>Nota de Serviço</h2>
 
                     <div style={{ margin: '20px 0' }}>
                         <p><strong>CLIENTE:</strong> {dados.cliente}</p>
