@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
 
@@ -13,7 +13,7 @@ import NotaServico from "../../../components/notaServico/notaServico";
 const Caixa = () => {
 
     const [clientes, setClientes] = useState([])
-    const [clienteSelecionado, SetClienteSelecionado] = useState('')
+    const [clienteSelecionado, setClienteSelecionado] = useState('')
     const [formaPagamento, setFormaPagamento] = useState('')
     const [desconto, setDesconto] = useState(0)
     const [valorRecebido, setValorRecebido] = useState(0)
@@ -24,6 +24,7 @@ const Caixa = () => {
     const [mostrarNota, setMostrarNota] = useState(false)
     const [vendaFinalizada, setVendaFinalizada] = useState(null)
 
+    const imputRef = useRef(null)
 
     useEffect(() => {
         const fetchClientes = async () => {
@@ -38,8 +39,6 @@ const Caixa = () => {
         }
         fetchClientes()
     }, [])
-
-
 
     async function handleSearch(e) {
         const term = e.target.value;
@@ -82,8 +81,8 @@ const Caixa = () => {
         })
         setSearchTerm('');
         setFoudProducts([])
+        imputRef.current.focus()
     }
-
 
     const cancelarVenda = () => {
         if (window.confirm("Deseja cancelar a venda?")) {
@@ -157,18 +156,15 @@ const Caixa = () => {
             if (response.ok) {
                 alert(data.mensagem)
 
-
                 setMostrarNota(true)
                 setVendaFinalizada(novaVenda)
 
-
-
                 setCarrinho([])
-                SetClienteSelecionado("")
+                setClienteSelecionado("")
                 setDesconto(0)
                 setValorRecebido(0)
                 setFormaPagamento("")
-                SetClienteSelecionado("")
+                setClienteSelecionado("")
                 setSearchTerm("")
 
 
@@ -205,7 +201,7 @@ const Caixa = () => {
                 <div className="container-listaProdutos">
                     <h3>Adicionar Produtos</h3>
                     <p>Busque e adicione produtos à venda</p>
-                    <input type="text" value={searchTem} onChange={handleSearch} className="inputPesquisaProduto" placeholder="Buscar Produto..." />
+                    <input type="text" value={searchTem} onChange={handleSearch} className="inputPesquisaProduto" ref={imputRef} placeholder="Buscar Produto..." />
 
                     {foundProducts.length > 0 && (
                         <div className="results-dropdown">
@@ -239,7 +235,7 @@ const Caixa = () => {
                     </div>
 
                     <label >Selecione um Cliente(Opcional)</label>
-                    <select onChange={(e) => SetClienteSelecionado(e.target.value)}>
+                    <select onChange={(e) => setClienteSelecionado(e.target.value)} value={clienteSelecionado}>
                         <option value="Selecione um cliente">Selecione um Cliente</option>
                         {
                             clientes.map((element, index) => {

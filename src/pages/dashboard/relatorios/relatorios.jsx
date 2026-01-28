@@ -9,6 +9,7 @@ import { FormData } from '../../../components/util/util.js'
 
 
 import './relatorio.css'
+import NotaServico from "../../../components/notaServico/notaServico.jsx";
 
 
 const Relatorios = () => {
@@ -16,6 +17,13 @@ const Relatorios = () => {
     const [receitaTotal, setReceitaTotal] = useState(0)
     const [itensVendidos, setItensVendidos] = useState(0)
     const [totaisPorMetodo, setTotaisPorMetodo] = useState({})
+
+
+
+    const [vendaSelecionada, setVendaSelecionada] = useState(null)
+    const [mostrarNota, setMostrarNota] = useState(false)
+
+
 
     useEffect(() => {
         const buscarVendas = async () => {
@@ -37,7 +45,6 @@ const Relatorios = () => {
                         return acc
                     }, {})
 
-
                     setTotaisPorMetodo(totaisPorMetodoCalculado)
                 } else {
                     setVendas([])
@@ -48,11 +55,28 @@ const Relatorios = () => {
         }
         buscarVendas()
 
-    }, [vendas])
+    }, [])
+
+    const abrirNota = (venda) => {
+        setVendaSelecionada(venda)
+        setMostrarNota(true)
+    }
+
 
     return (
         <>
             <DashboardLayout>
+
+                {mostrarNota && (
+                    <NotaServico
+                        dados={vendaSelecionada}
+                        fechar={() => {
+                            setMostrarNota(false)
+                            setVendaSelecionada(null)
+                        }}
+
+                    />
+                )}
 
                 <header>
                     <h1>Relatórios</h1>
@@ -84,7 +108,7 @@ const Relatorios = () => {
                     <Card
                         title='Ticket Médio'
                         icon={<BsFillCalendar2Fill />}
-                        qtd={"R$" + Number(vendas.length > 0 ? (receitaTotal / vendas.length).toFixed(2) : "0.00")}
+                        qtd={"R$" + Number(vendas.length > 0 ? (receitaTotal / vendas.length) : "0.00").toFixed(2)}
                         description='Valor médio por venda'
                     />
                 </div>
@@ -101,6 +125,7 @@ const Relatorios = () => {
                                 <thead>
                                     <tr>
                                         <th>Nome/Razão Social</th>
+                                        <th>Produto</th>
                                         <th>Data</th>
                                         <th>Valor</th>
                                     </tr>
@@ -108,8 +133,10 @@ const Relatorios = () => {
 
                                 <tbody>
                                     {vendas.map((v, index) => (
-                                        <tr key={index}>
+                                        <tr key={index} onClick={() => abrirNota(v)} className="row-venda" style={{ cursor: 'pointer' }}>
                                             <td>{v.cliente}</td>
+                                            <td>{Array.isArray(v.itens) ?
+                                                v.itens.map(item => item.produto || item.descricao || item.nome).join(",") : v.itens}</td>
                                             <td>{FormData(v.data)}</td>
                                             <td>{"R$ " + v.total}</td>
                                         </tr>
