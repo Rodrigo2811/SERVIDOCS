@@ -82,7 +82,7 @@ const Produtos = () => {
             descricao: ''
         })
         setModalOpen(false)
-        showAlert('Produto cadastrado com sucesso!', 'sucesso')
+
     }
 
     async function salvarProduto(e) {
@@ -93,28 +93,29 @@ const Produtos = () => {
             return;
         }
 
+        const isEditing = produto.id !== null;
+        const url = isEditing
+            ? `http://127.0.0.1:3003/produtos/${produto.id}`
+            : 'http://127.0.0.1:3003/cadProdutos'
+
+        const method = isEditing ? 'PUT' : 'POST';
+
         try {
-            const response = await fetch('http://127.0.0.1:3003/cadProdutos', {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    nome_produto: produto.nome_produto,
-                    categoria: produto.categoria,
-                    preco: produto.preco,
-                    quantidade: produto.quantidade,
-                    status: produto.status,
-                    descricao: produto.descricao
-                })
+                body: JSON.stringify(produto)
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                showAlert(data.mensagem, 'sucesso')
+                showAlert(isEditing ? "Atualizado com sucesso" : "Cadastrado com sucesso !", 'sucesso')
                 addProduto()
                 buscarProduto()
+                setModalOpen(true)
             } else {
                 showAlert(data.mensagem, 'erro')
             }
@@ -138,8 +139,23 @@ const Produtos = () => {
         setModalOpen(true)
     }
 
-    function editar(id) {
-        showAlert('editar: ' + id)
+    async function editar(id) {
+        const produtoParaEditar = produtos.find(p => p.id === id);
+
+        if (produtoParaEditar) {
+
+            setProduto({
+                id: produtoParaEditar.id,
+                nome_produto: produtoParaEditar.nome_produto.trim(),
+                categoria: produtoParaEditar.categoria,
+                preco: produtoParaEditar.preco,
+                quantidade: produtoParaEditar.quantidade,
+                status: produtoParaEditar.status.trim(),
+                descricao: produtoParaEditar.descricao,
+            })
+            setModalOpen(true)
+        }
+
     }
 
     async function removerProduto(id) {
@@ -223,7 +239,7 @@ const Produtos = () => {
                                         <td>{p.categoria}</td>
                                         <td>{'R$ ' + Number(p.preco).toFixed(2).replace('.', ',')}</td>
                                         <td>{p.quantidade}</td>
-                                        <td>{p.status}</td>
+                                        <td>{p.status.trim()}</td>
                                         <td>
                                             <button className="btn-acao" onClick={() => editar(p.id)}><BsFillPencilFill /></button>
                                             <button className="btn-acao" onClick={() => removerProduto(p.id)}><BsFillTrashFill /></button>
@@ -237,8 +253,8 @@ const Produtos = () => {
                 {modalOpen && (
                     <div className="modal-addProdutos" >
                         <header>
-                            <h3>Novo Produto</h3>
-                            <p>Preencha os dados para cadastrar um novo produto</p>
+                            <h3>{produto.id ? "Editar Produto" : "Novo Produto"}</h3>
+                            <p>{produto.id ? "Altere os dados " : "Preencha os dados para cadastrar um novo produto"}</p>
                         </header>
                         <form onSubmit={salvarProduto}>
 
@@ -293,9 +309,9 @@ const Produtos = () => {
                                     onChange={handleChange}
                                     required
                                 >
-                                    <option value="">Selecione o Status</option>
-                                    <option value="Disponivel">Disponível</option>
-                                    <option value="Indisponivel">Indisponível</option>
+                                    <option value="" name="status" onChange={handleChange}>Selecione o Status</option>
+                                    <option value={'Disponivel'}>Disponível</option>
+                                    <option value={'Indisponivel'}>Indisponível</option>
                                 </select>
 
                             </div>
@@ -312,7 +328,7 @@ const Produtos = () => {
 
                             <footer>
                                 <button className="btn-cancelar" type="button" onClick={() => setModalOpen(false)}>Cancelar</button>
-                                <button className="btn-cadastrar" type="submit">Cadastrar</button>
+                                <button className="btn-cadastrar" type="submit">{produto.id ? "Salvar Alterações" : "Cadastrar"}</button>
                             </footer>
                         </form>
                     </div>

@@ -43,7 +43,7 @@ const Usuarios = () => {
 
                 <header>
                     <div>
-                        <h2>Usuarios</h2>
+                        <h1>Usuarios</h1>
 
                         <p>Gerenciar usuários do sistema</p>
                     </div>

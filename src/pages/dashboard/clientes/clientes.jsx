@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BsFillPencilFill, BsFillTrashFill, BsPlus } from "react-icons/bs";
 
 import DashboardLayout from "../../../components/dashboardLayout/dashboardLayout";
@@ -28,7 +28,7 @@ const Clientes = () => {
     }
 
 
-    const buscarCliente = async () => {
+    const buscarCliente = useCallback(async () => {
         try {
             const response = await fetch('http://127.0.0.1:3003/clientes')
             const data = await response.json()
@@ -44,11 +44,13 @@ const Clientes = () => {
             console.error('Erro ao buscar clientes', error);
             showAlert('Erro ao carregar lista de clientes', error)
         }
-    }
-    useEffect(() => {
-        buscarCliente()
-    }, [])
+    }, []);
 
+    useEffect(() => {
+
+        buscarCliente();
+
+    }, [buscarCliente])
 
 
     const [cliente, setCliente] = useState({
@@ -117,8 +119,9 @@ const Clientes = () => {
 
             if (response.ok) {
                 showAlert(isEditing ? 'Atualizado com sucesso!' : 'Cadastrado com sucesso!', 'sucesso');
-                setModalClose(false); // Fecha o modal
-                buscarCliente();      // Recarrega a lista
+                setModalClose(false);
+                buscarCliente();
+
             } else {
                 showAlert(data.mensagem, 'erro');
             }
@@ -147,8 +150,6 @@ const Clientes = () => {
     }
 
     const totalClientes = clientes.length
-
-
 
     return (
         <>
@@ -204,7 +205,6 @@ const Clientes = () => {
 
                 </div>
 
-
                 {modalOpen && (
                     <div className="modal-addCliente">
                         <header>
@@ -238,8 +238,6 @@ const Clientes = () => {
                 )}
 
             </DashboardLayout >
-
-
         </>
     )
 }
